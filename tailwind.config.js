@@ -1,8 +1,8 @@
 // @ts-check
 /* eslint-disable @typescript-eslint/no-var-requires */
 
-const defaultTheme = require('tailwindcss/defaultTheme')
-const colors = require('tailwindcss/colors')
+const defaultTheme = require('tailwindcss/defaultTheme');
+const colors = require('tailwindcss/colors');
 
 /** @type {import("tailwindcss/tailwind-config").TailwindConfig } */
 module.exports = {
@@ -23,7 +23,7 @@ module.exports = {
         sans: ['InterVariable', ...defaultTheme.fontFamily.sans],
       },
       colors: {
-        primary: colors.teal,
+        primary: colors.blue,
         //@ts-ignore
         gray: colors.neutral, // TODO: Remove ts-ignore after tw types gets updated to v3
       },
@@ -41,19 +41,19 @@ module.exports = {
             h1: {
               fontWeight: '700',
               letterSpacing: theme('letterSpacing.tight'),
-              color: theme('colors.gray.900'),
+              color: theme('colors.gray.700'),
             },
             h2: {
               fontWeight: '700',
               letterSpacing: theme('letterSpacing.tight'),
-              color: theme('colors.gray.900'),
+              color: theme('colors.gray.700'),
             },
             h3: {
               fontWeight: '600',
-              color: theme('colors.gray.900'),
+              color: theme('colors.gray.700'),
             },
             'h4,h5,h6': {
-              color: theme('colors.gray.900'),
+              color: theme('colors.gray.700'),
             },
             pre: {
               backgroundColor: theme('colors.gray.800'),
@@ -161,4 +161,4 @@ module.exports = {
     },
   },
   plugins: [require('@tailwindcss/forms'), require('@tailwindcss/typography')],
-}
+};
