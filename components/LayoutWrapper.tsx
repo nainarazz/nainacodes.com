@@ -4,8 +4,9 @@ import Link from './Link';
 import SectionContainer from './SectionContainer';
 import Footer from './Footer';
 import ThemeSwitch from './ThemeSwitch';
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 import { useRouter } from 'next/router';
+import { useDocumentScrollThrottled } from 'hooks/useDocumentScrollThrottled';
 
 interface Props {
   children: ReactNode;
@@ -13,13 +14,35 @@ interface Props {
 
 const LayoutWrapper = ({ children }: Props) => {
   const router = useRouter();
+  const [shouldHideHeader, setShouldHideHeader] = useState(false);
+  const [shouldShowShadow, setShouldShowShadow] = useState(false);
+
+  const MINIMUM_SCROLL = 80;
+  const TIMEOUT_DELAY = 200;
+
+  useDocumentScrollThrottled((callbackData) => {
+    const { previousScrollTop, currentScrollTop } = callbackData;
+    const isScrolledDown = previousScrollTop < currentScrollTop;
+    const isMinimumScrolled = currentScrollTop > MINIMUM_SCROLL;
+
+    setShouldShowShadow(currentScrollTop > 2);
+
+    setTimeout(() => {
+      setShouldHideHeader(isScrolledDown && isMinimumScrolled);
+    }, TIMEOUT_DELAY);
+  });
+
   return (
-    <SectionContainer>
-      <div className="flex h-screen flex-col justify-between">
-        <header className="flex flex-col items-center justify-between py-10 md:flex-row">
-          <div className="mb-4 md:mb-0">
+    <>
+      <header
+        className={`fixed top-0 z-10 w-full bg-white duration-150 dark:bg-gray-900 ${
+          shouldHideHeader ? '-top-28' : ''
+        } ${shouldShowShadow ? 'shadow-md' : ''}`}
+      >
+        <div className="mx-auto flex max-w-3xl flex-col  items-center justify-between py-6 md:flex-row xl:max-w-5xl">
+          <div className=" mb-4  md:mb-0 ">
             <Link href="/" aria-label={siteMetadata.headerTitle}>
-              <div className="flex items-center justify-between decoration-blue-700 hover:underline hover:decoration-wavy">
+              <div className="flex items-center justify-between decoration-blue-700 hover:underline hover:decoration-wavy dark:decoration-yellow-500">
                 {typeof siteMetadata.headerTitle === 'string' ? (
                   <div className="h-6 text-2xl font-semibold">{siteMetadata.headerTitle}</div>
                 ) : (
@@ -34,9 +57,9 @@ const LayoutWrapper = ({ children }: Props) => {
                 <Link
                   key={link.title}
                   href={link.href}
-                  className={`p-4 font-medium text-gray-900 dark:text-gray-100 ${
+                  className={`p-4 font-medium text-gray-900 decoration-blue-700 hover:underline hover:decoration-wavy dark:text-gray-100 dark:decoration-yellow-500 ${
                     router.asPath.includes(link.href)
-                      ? 'underline decoration-blue-700 decoration-wavy underline-offset-4'
+                      ? 'underline  decoration-wavy underline-offset-4 '
                       : ''
                   }`}
                 >
@@ -46,11 +69,15 @@ const LayoutWrapper = ({ children }: Props) => {
             </div>
             <ThemeSwitch />
           </div>
-        </header>
-        <main className="mb-auto">{children}</main>
-        <Footer />
-      </div>
-    </SectionContainer>
+        </div>
+      </header>
+      <SectionContainer>
+        <div className="flex h-screen flex-col justify-between">
+          <main className="mb-auto">{children}</main>
+          <Footer />
+        </div>
+      </SectionContainer>
+    </>
   );
 };
 
