@@ -1,24 +1,40 @@
 import Link from './Link';
 import siteMetadata from '@/data/siteMetadata';
-import SocialIcon from '@/components/social-icons';
 
 export default function Footer() {
   return (
-    <footer>
-      <div className="mt-16 flex flex-col items-center">
-        <div className="mb-3 flex space-x-4">
-          <SocialIcon kind="mail" href={`mailto:${siteMetadata.email}`} size={6} />
-          <SocialIcon kind="github" href={siteMetadata.github} size={6} />
-          <SocialIcon kind="linkedin" href={siteMetadata.linkedin} size={6} />
-          <SocialIcon kind="twitter" href={siteMetadata.twitter} size={6} />
+    <footer className="mx-auto my-8 flex w-full  flex-col items-start justify-center">
+      <hr className="border-1 mb-8 w-full border-gray-200 dark:border-gray-800" />
+      <div className="grid w-full max-w-2xl grid-cols-1 gap-4 pb-8 sm:grid-cols-3">
+        <div className="flex flex-col space-y-4">
+          <Link href="/" className="text-sm text-gray-600">
+            Home
+          </Link>
+          <Link href="/about" className="text-sm text-gray-600">
+            About
+          </Link>
         </div>
-        <div className="mb-2 flex space-x-2 text-sm text-gray-500 dark:text-gray-400">
-          <div>{siteMetadata.author}</div>
-          <div>{` • `}</div>
-          <div>{`© ${new Date().getFullYear()}`}</div>
-          <div>{` • `}</div>
-          <Link href="/">{siteMetadata.title}</Link>
+        <div className="flex flex-col space-y-4">
+          <Link href={siteMetadata.twitter} className="text-sm text-gray-600">
+            Twitter
+          </Link>
+          <Link href={siteMetadata.linkedin} className="text-sm text-gray-600">
+            LinkedIn
+          </Link>
+          <Link href={siteMetadata.github} className="text-sm text-gray-600">
+            Github
+          </Link>
         </div>
+        <div className="flex flex-col space-y-4">
+          <Link href="/snippet" className="text-sm text-gray-600">
+            Snippets
+          </Link>
+        </div>
+      </div>
+      <div className="mb-2 flex space-x-2 text-sm text-gray-500 dark:text-gray-400">
+        <div>{siteMetadata.author}</div>
+        <div>{`© ${new Date().getFullYear()}`}</div>
+        <Link href="/">{siteMetadata.title}</Link>
       </div>
     </footer>
   );
