@@ -1,10 +1,12 @@
 import Link from './Link';
 import siteMetadata from '@/data/siteMetadata';
+import NowPlaying from './NowPlaying';
 
 export default function Footer() {
   return (
     <footer className="mx-auto my-8 flex w-full  flex-col items-start justify-center">
       <hr className="border-1 mb-8 w-full border-gray-200 dark:border-gray-800" />
+      <NowPlaying />
       <div className="grid w-full max-w-2xl grid-cols-1 gap-4 pb-8 sm:grid-cols-3">
         <div className="flex flex-col space-y-4">
           <Link href="/" className="text-sm text-gray-600">
