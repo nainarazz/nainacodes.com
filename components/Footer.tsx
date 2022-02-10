@@ -31,6 +31,9 @@ export default function Footer() {
           <Link href="/snippet" className="text-sm text-gray-600">
             Snippets
           </Link>
+          <Link href="/tags" className="text-sm text-gray-600">
+            Tags
+          </Link>
         </div>
       </div>
       <div className="mb-2 flex space-x-2 text-sm text-gray-500 dark:text-gray-400">
