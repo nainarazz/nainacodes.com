@@ -87,7 +87,7 @@ export default function ListLayout({ posts, title }: Props) {
       {hasMore ? (
         <div className="mt-8 flex justify-center">
           <button
-            className=" text-primary flex w-1/4 items-center justify-center space-x-5 whitespace-nowrap rounded-full border-2 px-11 py-6 font-bold hover:border-gray-600"
+            className=" text-primary flex w-3/4 items-center justify-center space-x-5 whitespace-nowrap rounded-full border-2 px-11 py-6 font-bold hover:border-gray-600 md:w-1/4"
             onClick={fetchNextPosts}
           >
             Load more posts
