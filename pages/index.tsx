@@ -43,7 +43,7 @@ export default function Home({ posts }: InferGetStaticPropsType<typeof getStatic
         })}
       </div>
       {posts.length > MAX_DISPLAY && (
-        <div className="flex justify-end text-base font-medium leading-6">
+        <div className="mt-8 flex justify-end text-base font-medium leading-6">
           <Link
             href="/blog"
             className="text-xl text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
