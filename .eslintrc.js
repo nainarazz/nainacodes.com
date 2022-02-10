@@ -25,6 +25,7 @@ module.exports = {
       },
     ],
     'react/react-in-jsx-scope': 'off',
+    'no-console': ['error', {}],
     'jsx-a11y/anchor-is-valid': [
       'error',
       {
