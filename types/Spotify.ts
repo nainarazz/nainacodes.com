@@ -16,3 +16,11 @@ export type NowPlayingSong = {
 export type TopTracks = {
   tracks: Song[];
 };
+
+export type Show = {
+  id: string;
+  title: string;
+  date: string;
+  image: string;
+  url: string;
+};
