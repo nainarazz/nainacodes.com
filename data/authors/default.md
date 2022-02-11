@@ -37,6 +37,7 @@ working with a software startup developing web applications.
 - [Tania Rascia](https://taniarascia.com). — love the design of her site and great tutorials as well
 - [Dan Abramov](https://overreacted.io). — love the simplicity of his blog as well as content
 - [Josh Comeau](https://joshwcomeau.com). — the design of his blog is just awesome
+- [Lee Robinson](https://leerob.io). — I like the the features of his site. Guestbook, spotify playing list (where I copied the feature 😅, tnx Lee)
 
 ## Favorite Podcasts
 
