@@ -24,7 +24,7 @@ const BlogCard = ({ title, description, imgSrc, href, tags, date }) => (
             {tags.map((tag) => (
               <div
                 key={tag}
-                className=" mr-3 text-sm font-medium uppercase text-primary-500 dark:hover:text-primary-400"
+                className=" mr-3 text-sm font-medium uppercase text-primary-500 dark:text-yellow-500 dark:hover:text-yellow-600"
               >
                 {tag}
               </div>

@@ -53,7 +53,7 @@ export default function Home({ posts }: InferGetStaticPropsType<typeof getStatic
         <div className="mt-8 flex justify-end text-base font-medium leading-6">
           <Link
             href="/blog"
-            className="text-xl text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
+            className="text-xl text-primary-500 hover:text-primary-600 dark:text-yellow-500 dark:hover:text-yellow-600"
             aria-label="all posts"
           >
             All Posts &rarr;
