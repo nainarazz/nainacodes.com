@@ -75,7 +75,9 @@ app.prepare().then(() => {
             // run the exported function from your --script script
             executeFile(filePathContext, eventContext);
           } catch (e) {
+            // eslint-disable-next-line no-console
             console.error('Remote script failed');
+            // eslint-disable-next-line no-console
             console.error(e);
             return e;
           }
@@ -99,6 +101,7 @@ app.prepare().then(() => {
     // log message if present
     const msg = req.body.message;
     const color = req.body.color;
+    // eslint-disable-next-line no-console
     msg && console.log(color ? chalk[color](msg) : msg);
 
     // reload the nextjs app
@@ -115,6 +118,7 @@ app.prepare().then(() => {
   // fire it up
   server.listen(port, (err) => {
     if (err) throw err;
+    // eslint-disable-next-line no-console
     console.log(`> Ready on http://localhost:${port}`);
   });
 });

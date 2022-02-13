@@ -109,14 +109,17 @@ inquirer
       if (err) {
         throw err;
       } else {
+        // eslint-disable-next-line no-console
         console.log(`Blog post generated successfully at ${filePath}`);
       }
     });
   })
   .catch((error) => {
     if (error.isTtyError) {
+      // eslint-disable-next-line no-console
       console.log("Prompt couldn't be rendered in the current environment");
     } else {
+      // eslint-disable-next-line no-console
       console.log('Something went wrong, sorry!');
     }
   });
