@@ -14,6 +14,7 @@ const ContentSecurityPolicy = `
   frame-src utteranc.es
 `;
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const securityHeaders = [
   // https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP
   {
@@ -60,14 +61,6 @@ module.exports = withBundleAnalyzer({
   pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
   eslint: {
     dirs: ['pages', 'components', 'lib', 'layouts', 'scripts'],
-  },
-  async headers() {
-    return [
-      {
-        source: '/(.*)',
-        headers: securityHeaders,
-      },
-    ];
   },
   webpack: (config, { dev, isServer }) => {
     config.module.rules.push({
