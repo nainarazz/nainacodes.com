@@ -2,7 +2,7 @@ import Link from '@/components/Link';
 import PageTitle from '@/components/PageTitle';
 import SectionContainer from '@/components/SectionContainer';
 import { BlogSEO } from '@/components/SEO';
-import siteMetadata from '@/data/siteMetadata';
+import siteMetadata from '@/data/site-metadata';
 import formatDate from '@/lib/utils/formatDate';
 import Comments from '@/components/comments';
 import ScrollTopAndComment from '@/components/ScrollTopAndComment';

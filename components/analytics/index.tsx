@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import GA from './GoogleAnalytics';
-import siteMetadata from '@/data/siteMetadata';
+import siteMetadata from '@/data/site-metadata';
 
 declare global {
   interface Window {

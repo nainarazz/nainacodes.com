@@ -1,5 +1,5 @@
 import Link from './Link';
-import siteMetadata from '@/data/siteMetadata';
+import siteMetadata from '@/data/site-metadata';
 import NowPlaying from './NowPlaying';
 
 export default function Footer() {

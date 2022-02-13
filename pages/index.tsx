@@ -3,7 +3,7 @@ import Hero from '@/components/Hero';
 import Image from '@/components/Image';
 import Link from '@/components/Link';
 import { PageSEO } from '@/components/SEO';
-import siteMetadata from '@/data/siteMetadata';
+import siteMetadata from '@/data/site-metadata';
 import fetcher from '@/lib/fetcher';
 import { getAllFilesFrontMatter } from '@/lib/mdx';
 import formatDate from '@/lib/utils/formatDate';

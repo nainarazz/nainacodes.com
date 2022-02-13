@@ -1,4 +1,4 @@
-import siteMetadata from '@/data/siteMetadata';
+import siteMetadata from '@/data/site-metadata';
 import { PageSEO } from '@/components/SEO';
 import PageTitle from '@/components/PageTitle';
 

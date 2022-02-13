@@ -4,7 +4,7 @@ import SectionContainer from '@/components/SectionContainer';
 import { BlogSEO } from '@/components/SEO';
 import Image from '@/components/Image';
 import Tag from '@/components/Tag';
-import siteMetadata from '@/data/siteMetadata';
+import siteMetadata from '@/data/site-metadata';
 import Comments from '@/components/comments';
 import ScrollTopAndComment from '@/components/ScrollTopAndComment';
 import { ReactNode } from 'react';
