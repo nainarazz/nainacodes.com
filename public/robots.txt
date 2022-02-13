@@ -1,0 +1,3 @@
+User-agent: *
+
+sitemap: https://nainacodes.com/sitemap.xml
