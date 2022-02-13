@@ -5,8 +5,6 @@ import siteMetadata from '@/data/site-metadata';
 declare global {
   interface Window {
     gtag?: (...args: any[]) => void;
-    plausible?: (...args: any[]) => void;
-    sa_event?: (...args: any[]) => void;
   }
 }
 

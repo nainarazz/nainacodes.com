@@ -18,12 +18,6 @@ const GiscusComponent = dynamic(
   },
   { ssr: false }
 );
-const DisqusComponent = dynamic(
-  () => {
-    return import('@/components/comments/Disqus');
-  },
-  { ssr: false }
-);
 
 const Comments = ({ frontMatter }: Props) => {
   let term;
@@ -48,9 +42,6 @@ const Comments = ({ frontMatter }: Props) => {
       )}
       {siteMetadata.comment && siteMetadata.comment.provider === 'utterances' && (
         <UtterancesComponent issueTerm={term} />
-      )}
-      {siteMetadata.comment && siteMetadata.comment.provider === 'disqus' && (
-        <DisqusComponent frontMatter={frontMatter} />
       )}
     </div>
   );
