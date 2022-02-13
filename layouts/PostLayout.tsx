@@ -161,7 +161,7 @@ export default function PostLayout({
                 )}
               </footer>
             </div>
-            <div className="sticky top-12 hidden max-h-[800px] overflow-auto pt-4 xl:block xl:pt-8 ">
+            <div className="sticky top-12 hidden max-h-[500px] overflow-auto pt-4 xl:block xl:pt-8 ">
               <TOCInline toc={toc} asDisclosure />
             </div>
           </div>
