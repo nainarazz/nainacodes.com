@@ -1,0 +1,163 @@
+---
+title: 'Nullish Coalescing and Optional Chaining Operator'
+date: '2020-09-07'
+draft: false
+lastmod: '2020-09-07'
+tags: ['javascript']
+summary: 'Learn how to use nullish coalescing and optional chaining operator in JavaScript ES11.'
+images: ['/static/images/null-coalescing-optional-chaining-operator/cover.jpg']
+authors: ['default']
+---
+
+<Image
+  alt="question mark"
+  src="/static/images/null-coalescing-optional-chaining-operator/cover.jpg"
+  width={800}
+  height={400}
+  priority
+/>
+
+<ImageAttribution
+  text="Photo by Evan Dennis on Unsplash"
+  url="https://unsplash.com/photos/i--IN3cvEjg"
+/>
+
+ECMAScript 2020 has released many interesting features, and in this post I want to discuss two of the new features that I really like — the nullish coalescing operator and the optional chaining operator.
+
+## Nullish coalescing operator
+
+Quoting from the [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Nullish_coalescing_operator) docs, it is
+
+> a logical operator that returns its right-hand side operand when its left-hand side operand is null or undefined, and otherwise returns its left-hand side operand.
+
+It is denoted by a double question mark `??` . Here is an example.
+
+```javascript
+undefined ?? 'Web design'; // Web design
+null ?? 'Mansion'; // Mansion
+```
+
+In this example, the right-hand side value is returned because the left-hand side is null or undefined. But if the left-hand side operand has a value (as in the following example), the left-hand side value is returned.
+
+```javascript
+'JavaScript Data Structures' ?? 'Web design'; // JavaScript Data Structures
+```
+
+### How is it different from || operator
+
+Unlike the OR operator, the nullish coalescing operator only looks for **_null_** or **_undefined_** values. If the value is a _falsey_ value (besides _null_ and _undefined_), the nullish coalescing operator will return the falsey value.
+
+Here are the falsey values in JavaScript.
+
+- false
+- null
+- undefined
+- 0
+- ''
+- NaN
+
+```javascript
+0 ?? 15; // 0
+false ?? true; // false
+'' ?? 'banana'; // ""
+```
+
+So when do you use the null coalescing operator over the `OR` operator? Here is a simple guideline on what to use. If you want to filter out falsey values, then you should probably use the `OR` operator. But if falsey values are valid default values to you, then you should probably use the nullish coalescing operator.
+
+### Chaining nullish coalescing operator
+
+It is cool that you can actually chain the nullish coalescing operator, so this is completely valid.
+
+```javascript
+null ?? undefined ?? 0 ?? 'nice'; // 0
+null ?? '' ?? 'great'; // ''
+```
+
+You cannot, however, combine it with `&&` or `||` operators. This will throw a `Syntax` error.
+
+```javascript
+null || undefined ?? 'not working'
+```
+
+But if you wrap the || expression with a parethesis, it will work.
+
+```javascript
+(null || undefined) ?? 'working';
+```
+
+## Optional Chaining
+
+This is my favorite new feature in ECMAScript 2020. Have you ever encountered a code like this?
+
+```javascript
+const person = {
+  address: {},
+};
+
+if (person.address && person.address.position && person.address.position.latitude) {
+  // do something
+}
+```
+
+Before accessing the latitude property, you first have to do a series of checks to make sure it actually exists, otherwise you will get an error `Cannot read property 'latitude' of undefined`. I frequently encounter code like this, and it can sometimes be pretty annoying.
+
+Here is where optional chaining shines. We can check if the property exists by just using `?.` after the property of an object. Let's refactor the code above.
+
+```javascript
+if (person.address?.position?.latitude) {
+  // do something
+}
+```
+
+Now it is much shorter and cleaner. The optional chaining operator will check for us if the property exists. If the property doesn't exist it will just return _undefined_ and not throw an error.
+
+You can also use optional chaining with arrays and functions. Suppose you have an array of objects like this.
+
+```javascript
+const persons = [
+  {
+    name: 'Peter',
+  },
+  {
+    name: 'Jessica',
+  },
+];
+```
+
+If you try to access 3rd person name (which doesn't exist), it will throw an error.
+
+```javascript
+persons[2].name; // Cannot read property 'name' of undefined
+```
+
+But if you use the optional chaining operator, it will just return _undefined_.
+
+```javascript
+persons[2]?.name; // undefined
+```
+
+The same with functions (returns _undefined_ if it doesn't exist)
+
+```javascript
+persons[2]?.name.toLowerCase(); // undefined
+```
+
+### Combining optional chaining with nullish coalescing operator
+
+Because the optional chaining operator returns _undefined_ if a property doesn't exit, we could use it together with the nullish coalescing operator to set default values.
+
+```javascript
+const person = {
+  address: {},
+};
+
+console.log(person?.address?.position ?? 'No address defined.'); // No address defined
+```
+
+## Conclusion
+
+JavaScript has immensely improved since ECMAScript 2015 and a lot of new features are being added to the language every year. It is no longer just a language you use for simple animations in the browser 😉
+
+We have seen how to use the nullish coalescing and optional chaining operator. In summary, you can use the nullish coalescing operator if you want your default values to include falsey values. And if you are not sure whether an object has a certain property before accessing it, you can use the optional chaining operator to avoid a long series of check and `Cannot read property` error.
+
+Thanks for reading! If this has helped you, kindly please share 😎

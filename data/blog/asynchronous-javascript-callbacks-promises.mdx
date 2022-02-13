@@ -1,0 +1,397 @@
+---
+title: 'Asynchronous JavaScript: Callbacks, Promises, Async/Await'
+date: '2020-06-15'
+lastmod: '2020-06-15'
+tags: ['javascript']
+draft: false
+summary: 'Learn and understand how to use callbacks, promises and async/await in JavaScript.'
+images: ['/static/images/asynchronous-javascript-callbacks-promises/cover.jpg']
+authors: ['default']
+---
+
+<Image
+  alt="javscript promises"
+  src="/static/images/asynchronous-javascript-callbacks-promises/cover.jpg"
+  width={800}
+  height={400}
+  priority
+/>
+
+<ImageAttribution
+  text="Photo by Valentin Antonucci on Unsplash"
+  url="https://unsplash.com/photos/9cRDDvhpBRw"
+/>
+
+JavaScript is synchronous by design. When you execute a function, it has wait for it to finish before executing the next function. This can be a problem if the function executing takes a very long time to finish. It will block your application and make it unresponsive.
+
+To avoid this, JavaScript provides us a way to execute functions asynchronously. By executing functions asynchronously, we can execute multiple functions at the same time without having to wait for each other. If you want learn more how JavaScript handles asynchronous programming, I recommend you to read my other post on [how JavaScript works behind the scenes](https://nainacodes.com/blog/understand-the-event-loop-in-javascript).
+
+In this post, I want to show you how to handle asynchronous functions using callbacks, promises, and async/await.
+
+## Callbacks
+
+A callback is a function that is passed as an argument to another function. It can either be synchronous or asynchronous.
+
+When a callback is synchronous, it is executed immediately.
+
+```javascript
+function readFile(filename, callback) {
+  console.log('start');
+  callback(filename);
+  console.log('end');
+}
+
+readFile('test.js', (filename) => {
+  console.log(filename);
+});
+```
+
+If you run the code, you will see that the console logs appear in order.
+
+```console
+start
+test.js
+end
+```
+
+When a callback is asynchronous, it will be executed at a later time after some other tasks have completed. The browser API have functions that execute callbacks asynchronously, such as `setTimeout()`, `setInterval()`, and functions for manipulating the DOM.
+
+Let us convert our function above to execute the callback asynchronously.
+
+```javascript
+function readFile(filename, callback) {
+  console.log('start');
+  setTimeout(() => {
+    callback(filename);
+  }, 1000);
+  console.log('end');
+}
+
+readFile('test.js', (filename) => {
+  console.log(filename);
+});
+```
+
+If you run the code, you will notice that the console logs are no longer shown sequentially.
+
+```console
+start
+end
+test.js
+```
+
+The callback is executed after one second, but the JavaScript engine didn't wait for it to finish before running the other functions.
+
+### Callback hell
+
+Asynchronous functions usually use a callback to pass data that have been processed by the asynchronous function. The problem with callbacks is that when you have a lot of them nested to each other, the code becomes difficult to read and understand.
+
+Look at this code. Can you tell what is happening?
+
+```javascript
+function getEmployee(employeeName, callback) {
+  console.log('getting employee data from database ...');
+  setTimeout(() => {
+    // mock data from database
+    const employee = { username: employeeName, name: employeeName };
+    callback(employee);
+  }, 1000);
+}
+
+function getUser(username, callback) {
+  console.log('getting user data from database ...');
+  setTimeout(() => {
+    // mock data from database
+    const user = { username, role: 'Admin' };
+    callback(user);
+  }, 2000);
+}
+
+function getPermissions(role, callback) {
+  console.log('getting user roles...');
+  setTimeout(() => {
+    // mock data from database
+    const permissions = { role: role, permission: ['edit', 'view', 'delete'] };
+    callback(permissions);
+  }, 3000);
+}
+
+getEmployee('Peter', (employee) => {
+  getUser(employee.username, (user) => {
+    getPermissions(user.role, (permissions) => {
+      console.log('permission:', permissions);
+    });
+  });
+});
+```
+
+First, we are getting data about an employee from the database. We are simulating a call to the database with `setTimeout()` and returning a mock data. After receiving the employee data, we use the employee's username to get the associated user. Then after getting the associated user, we use the user's role to get the user's permissions. Finally we log the permissions.
+
+We have introduced levels of nesting with our callback. The more the code is indented towards the right, the harder it becomes to read, follow and maintain. This will lead to more error-prone code. As the level of nesting deepens, we create a **callback hell.**
+
+## Promises
+
+ECMAScript 2015 (aka ES6) introduced promises. A promise is a JavaScript object that represents the result of an asynchronous operation. It can be in one of three states.
+
+1. _pending_. the initial state of the promise
+2. _resolved_. represents a successful operation
+3. _rejected_. represents a failed operation
+
+As you will see, promises are a better way of dealing with asynchronous code.
+
+### Creating promises
+
+To create a promise, you simply create an instance of the Promise class.
+
+```javascript
+const promise1 = new Promise();
+```
+
+The promise constructor accepts a callback which is called the **_executor_**. It contains the code that will produce a result, and it is executed immediately (synchronous). The executor receives two arguments, `resolve` and `reject` functions. If the operation in the executor is successful, we pass the value to the `resolve()`. On the other hand, if it has failed, we pass the value to the `reject()`.
+
+```javascript
+const promise = new Promise((resolve, reject) => {
+  // some code to do something
+  const success = true; // my operation has succeeded
+
+  if (success) {
+    resolve('success');
+  } else {
+    reject('it has failed');
+  }
+});
+```
+
+A promise begins with the initial state. When the operation succeeds, it transitions into a resolve state, and if it fails, it goes into rejected state. Note once it has changed states, it is final. In other words, if it has resolved, it cannot reject, and vice-versa.
+
+### Consuming promises
+
+There are three methods that we can use to consume the value of a promise — the `then()`, `catch()`, and `finally()`.
+
+### then
+
+The `then()` is the most important of the three. It is used to access the `resolve` and `reject` value of the promise. It accepts two callbacks.
+
+The first callback is called when the promise has resolved, and its argument is the resolved value of the promise.The second callback is called when the promise has rejected, and its argument is the error.
+
+```javascript {20} showLineNumbers
+const promise = new Promise((resolve, reject) => {
+  // some code to do something
+  const success = true; // my operation has succeeded
+
+  if (success) {
+    resolve('success');
+  } else {
+    reject('it has failed');
+  }
+});
+
+function resolveCallback(value) {
+  console.log('promise has resolved ', value);
+}
+
+function rejectCallback(value) {
+  console.log('promise has rejected ', value);
+}
+
+promise.then(resolveCallback, rejectCallback);
+```
+
+### catch
+
+As the the name implies, the `catch()` is used to catch error in the promise. It accepts a callback function in which the argument is the error. When you use the catch method, you can omit the second argument of the `then()` , and handle the error gracefully inside the catch.
+
+```javascript {9} showLineNumbers
+const promise = new Promise((resolve, reject) => {
+  throw new Error('sorry something bad happend');
+});
+
+function resolveCallback(value) {
+  console.log('promise has resolved ', value);
+}
+
+promise.then(resolveCallback).catch((error) => console.log('my error', error));
+```
+
+### finally
+
+The `finally()` method is always run whether the promise is resolved or rejected. It is good for performing clean up functions, and it avoids duplicating code in promise's `then()` and `catch()`.
+
+```javascript {23} showLineNumbers
+const promise = new Promise((resolve, reject) => {
+  // some code to do something
+  const success = true; // my operation has succeeded
+
+  if (success) {
+    resolve('success');
+  } else {
+    reject('it has failed');
+  }
+});
+
+function resolveCallback(value) {
+  console.log('promise has resolved ', value);
+}
+
+function rejectCallback(value) {
+  console.log('promise has rejected ', value);
+}
+
+promise
+  .then(resolveCallback)
+  .catch((error) => console.log('my error', error))
+  .finally(() => console.log('i am always executed'));
+```
+
+### Chaining then()
+
+The best thing about promises is that they are chainable. Remember the callback hell above? We can actually improve our code by converting the callbacks into promises.
+
+```javascript {2, 14, 26, 37-40} showLineNumbers
+function getEmployee(employeeName) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      console.log('getting employee data from database ...');
+
+      // mock data from database
+      const employee = { username: employeeName, name: employeeName };
+      resolve(employee);
+    }, 1000);
+  });
+}
+
+function getUser(username) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      console.log('getting user data from database ...');
+
+      // mock data from database
+      const user = { username, role: 'Admin' };
+      resolve(user);
+    }, 2000);
+  });
+}
+
+function getPermissions(role) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      console.log('getting user roles...');
+
+      // mock data from database
+      const permissions = { role: role, permission: ['edit', 'view', 'delete'] };
+      resolve(permissions);
+    }, 3000);
+  });
+}
+
+getEmployee('Peter')
+  .then((employee) => getUser(employee.username))
+  .then((user) => getPermissions(user.role))
+  .then((permissions) => console.log('permissions', permissions));
+```
+
+So we have converted our functions into promises by returning a promise object. We have removed the callback in each of the functions. The asynchronous code runs inside the executor, and once it has finished, we execute the `resolve()` and pass our result.
+
+The way we call our functions is very interesting. First, we call `getEmployee()`, and it returns a promise. As we said, we can consume the promise with the `then()` method. Inside the first `then()`, we return `getUser()`, which is also a promise. This means we can call another `then()` to consume the promise. The pattern continues until we reach a function where we do not return a promise. In our final statement, we console log final value.
+
+This is much cleaner and more readable than when using callbacks. The code doesn't indent towards the right, but instead goes downwards, thus making it easier to follow.
+
+## Async/await
+
+The async/await is a new feature introduced in ECMAScript 2017 (aka ES8) that makes it even easier to work with promises. Async/await is just basically a syntactic sugar around promises.
+
+When you use async/await, you are writing asynchronous function in a synchronous way. No callbacks or whatsoever. You just write one statement after the other.
+
+Let us convert our employee example to use async/await.
+
+```javascript {37-40}
+function getEmployee(employeeName) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      console.log('getting employee data from database ...');
+
+      // mock data from database
+      const employee = { username: employeeName, name: employeeName };
+      resolve(employee);
+    }, 1000);
+  });
+}
+
+function getUser(username) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      console.log('getting user data from database ...');
+
+      // mock data from database
+      const user = { username, role: 'Admin' };
+      resolve(user);
+    }, 2000);
+  });
+}
+
+function getPermissions(role) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      console.log('getting user roles...');
+
+      // mock data from database
+      const permissions = { role: role, permission: ['edit', 'view', 'delete'] };
+      resolve(permissions);
+    }, 3000);
+  });
+}
+
+async function getUserPermissions() {
+  const employee = await getEmployee('Peter');
+  const user = await getUser(employee.username);
+  const permissions = await getPermissions(user.role);
+
+  console.log('user permissions', permissions);
+}
+
+getUserPermissions();
+```
+
+In our example, our functions still return promises. I have added another function called `getUserPermissions()`.
+
+Notice that it is marked with **_async_** keyword. Inside this method, we call our functions that return promises like any other function, but we mark them with **_await_** keyword. This basically tells the compiler, 'Wait for me before moving to the next statement'. So instead of using `then()` to access values returned by the promise, we just await the function and store the return value in a variable.
+
+Isn't this easier to read than chaining `then()`'s in promises? You await on functions that return promises.
+
+The thing to note is that you can only use the **_await_** keyword inside a function that is marked with **_async_** and functions marked with **_async_** will always return a promise (even if you don't await any function). That means you can always use `then()` on an **_async_** function.
+
+```javascript
+async function getUserPermissions() {
+  const employee = await getEmployee('Peter');
+  const user = await getUser(employee.username);
+  const permissions = await getPermissions(user.role);
+
+  console.log('user permissions', permissions);
+}
+
+getUserPermissions().then(() => console.log('success'));
+```
+
+To handle errors when using async/await, you can wrap the function in a try/catch block.
+
+```javascript
+async function getUserPermissions() {
+  try {
+    const employee = await getEmployee('Peter');
+    const user = await getUser(employee.username);
+    const permissions = await getPermissions(user.role);
+  } catch {}
+
+  console.log('user permissions', permissions);
+}
+```
+
+## Conclusion
+
+Congratulations for reaching up to this point!
+
+Before 2015 we used callbacks to access values returned by asynchronous functions, but as we have seen, when we nest too many callbacks, our code becomes difficult to read and maintain.
+
+Promises came to the rescue. We can wrap asynchronous functions in a promise, and we are able to access values by using `then()`. We can chain our `then()`'s beautifully to make the code more readable and maintainable. Then in 2017 (_pun intended)_, async/await made it even easier to work with promises and asynchronous code. We can write with promises in a synchronous fashion.
+
+If you have liked this post or it has helped you, kindly please share it 😀

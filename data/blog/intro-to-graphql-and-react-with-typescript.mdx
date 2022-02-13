@@ -1,0 +1,385 @@
+---
+title: 'Intro to GraphQL and React using TypeScript'
+draft: false
+date: '2020-08-31'
+lastmod: '2020-08-31'
+tags: ['typescript', 'react', 'graphql']
+summary: 'Learn how use GraphQL with React and TypeScript to query a graphql endpoint.'
+images: ['/static/images/intro-to-graphql-and-react-with-typescript/cover.jpg']
+authors: ['default']
+---
+
+<Image
+  alt="abstract photo"
+  src="/static/images/intro-to-graphql-and-react-with-typescript/cover.jpg"
+  width={800}
+  height={400}
+  priority
+/>
+
+<ImageAttribution text="Image by Core Axis" url="https://unsplash.com/photos/Vk7gajXtc90" />
+
+GraphQL is a modern way of requesting data from the server to the client. It is a query language that allows the client to describe the data it needs.
+
+There are three characteristics of GraphQL that differentiates it from REST APIs. **First**, with GraphQL, you can get exactly what you need, nothing more or nothing less (under fetching or over fetching). You can request the exact piece data you need.
+
+**Second**, you can get multiple data from different sources in just one single query. With REST API, you may need to make multiple request to get all the data.
+
+**Third**, it uses a type system to describe what data can clients request.
+
+In this tutorial, I will show you the basics of how to use GraphQL with React and TypeScript. We are going to use Apollo Client to consume GraphQL API. Apollo is a set of tools we can use to query and also set up a GraphQL server.
+
+## Query structure
+
+The structure of a GraphQL query looks something like this.
+
+```graphql
+query Countries {
+  countries {
+    name
+    code
+    capital
+  }
+}
+```
+
+The _query_ keyword indicates the operation type. This means that the operation type is a query, which is equivalent to a GET request in REST. We can also have a _mutation_, which is for POST, PUT, PATCH, and DELETE in REST.
+
+_Countries_ is the name of the query, but we can also have an anonymous one (without a name).
+
+```tsx
+query {
+	countries {
+		name
+		code
+		capital
+	}
+}
+```
+
+After the query, we now specify the fields that we want to get. Here, we are getting the list of countries, and for each country, we are getting its name, code, and capital.
+
+There are many other things you can specify in a query, such as variables, fragments, and directives. If you want to dive dive deeper into the anatomy of a GraphQL query, check out this post. [Anatomy of a graphql query](https://www.apollographql.com/blog/the-anatomy-of-a-graphql-query-6dffa9e9e747/)
+
+## Setting up Apollo
+
+As mentioned earlier, Apollo is a set of tools that makes is it easier for developers to work with GraphQL. We have the Apollo Client and the Apollo Server.
+
+Apollo Client is what you use to consume GraphQL API, and it supports popular frontend frameworks such as React, Angular, Vue, and more. This is what we're gonna use in this tutorial together with React.
+
+Apollo Server is what you use to set up a GraphQL server and send responses back to the client. In this post, we are not going to create our own server, but instead we are going to use a public GraphQL API for information about countries to demonstrate how to use GraphQL queries.
+
+([https://github.com/trevorblades/countries](https://github.com/trevorblades/countries))
+
+So, to use Apollo Client with React, we first need to install all the necessary packages. I assume that you already have a TypeScript React project set up at this point 🙂
+
+```bash
+npm install @apollo/client graphql
+```
+
+After installation, we need to create a client. In the _index.tsx_ file, copy the following piece of code.
+
+```tsx:index.tsx
+import { ApolloClient, InMemoryCache } from '@apollo/client';
+
+const client = new ApolloClient({
+  uri: 'https://countries.trevorblades.com/',
+  cache: new InMemoryCache(),
+});
+```
+
+We are instantiating a new object from the ApolloClient class, and we are passing the options for our client in the constructor. The _uri_ points to the url of the GraphQL server, and the cache is the [caching strategy](https://www.apollographql.com/docs/react/caching/cache-configuration/) we're going to use with the client. _InMemoryCache_ is the default mechanism provided by Apollo, and it's a good one to start with.
+
+After creating a client, we now need to connect our React app to the client. We can do this by wrapping the `<App />` component with the ApolloProvider.
+
+```tsx:index.tsx
+import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
+
+const client = new ApolloClient({
+  uri: 'https://countries.trevorblades.com/',
+  cache: new InMemoryCache(),
+});
+
+const App: FunctionComponent = () => <CountryList />;
+
+render(
+  <ApolloProvider client={client}>
+    <App />
+  </ApolloProvider>,
+  document.getElementById('root')
+);
+```
+
+We pass the an ApolloClient to the ApolloProvider as a prop. Any component nested in between the ApolloProvider can now perform GraphQL operations.
+
+## Making your first query
+
+We are ready to do our first GraphQL query. The uri of the GraphQL server that our app is pointing to provides information about countries, capital, continent, and other information. So for our first query, we are going to create a `<CountryList/>` component that will list of all the countries around the world together with their capital city and continent.
+
+We are going to create a new file called `CountryList.tsx`. The content of this file will be like this:
+
+```tsx:CountryList.tsx
+import React, { Fragment } from 'react';
+import { useQuery, gql } from '@apollo/client';
+
+interface Country {
+  name: string;
+  code: string;
+  capital: string;
+  continent: {
+    name: string;
+  };
+}
+
+interface CountryData {
+  countries: Country[];
+}
+
+const COUNTRIES_QUERY = gql`
+  query Countries {
+    countries {
+      name
+      code
+      capital
+      continent {
+        name
+        code
+      }
+    }
+  }
+`;
+
+const CountryList: FunctionComponent = () => {
+  const { data, loading, error } = useQuery<CountryData>(COUNTRIES_QUERY);
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+  const { countries } = data;
+
+  return (
+    <>
+      {countries.map((c, i) => (
+        <div key={i}>
+          {c.name} - {c.capital} - {c.continent.name}
+        </div>
+      ))}
+    </>
+  );
+};
+
+export default CountryList;
+```
+
+We defined our GraphQL query in a constant called COUNTRIES_QUERY. It uses `gql`, a parser function that parses our plain string containing GraphQL code. In this query, we are requesting a list of countries, with their name, code, capital and continent. This is the nice thing about GraphQL because we can specify exactly what fields we need.
+
+Then, inside the CountryList component, we use a custom React hook provided by Apollo to execute our query. The `useQuery` hook fetches the GraphQL query and returns a result that we can use in our UI.
+
+The `useQuery` hook returns a data property (we destructured it) that basically contains the information we requested for. But it also returns a loading property, and an error property. Here, we are using the loading property to show a loading message while data is being fetched. You can console log the result of `useQuery` to see all the available properties returned.
+
+The data property contains the list of countries, so we just map through the list and return the jsx containing the name, capital and continent of the country. Notice how we also typed the data returned by `useQuery` hook to be of type CountryData.
+
+So yea, making a query is as simple as that 😉
+
+## Query with parameters
+
+Let us say we only want to get European countries. How do we do that? GraphQL allows us pass variables in the query. It is like the query params in REST, but more powerful.
+
+We can modify our query constant above to something like this.
+
+```tsx
+const COUNTRIES_QUERY = gql`
+  query Countries {
+    countries(filter: { continent: { eq: "EU" } }) {
+      name
+      code
+      capital
+      continent {
+        name
+        code
+      }
+    }
+  }
+`;
+```
+
+Our GraphQL endpoint allows us to pass a filter object to filter the results. This is how the server was set up. What we pass here depends on your GraphQL endpoint. So here we are simply getting countries that have continent code equal to "EU". If you replace the constant above with this one, you will only get European countries in your list.
+
+That is pretty static, because we hard-coded the filter, but we can also make it dynamic.
+
+```tsx
+const COUNTRIES_QUERY = gql`
+  query Counties($code: String) {
+    countries(filter: { continent: { eq: $code } }) {
+      name
+      code
+      capital
+      continent {
+        name
+        code
+      }
+    }
+  }
+`;
+```
+
+The code we pass in the filter is now dynamic. The `$code` is of type string, and we use that value in the filter for countries.
+
+To pass the actual value, we can change our `useQuery` hook to this.
+
+```tsx
+const continentCode = 'EU';
+const { data, loading } = useQuery<CountryData>(COUNTRIES_QUERY, {
+  variables: {
+    code: continentCode,
+  },
+});
+```
+
+The `useQuery` hook accepts a second argument as object, and that is where we pass our argument for the parameter in our query.
+
+Here is the final code. Notice that we have also typed our query variables with CountryVariable interface.
+
+```tsx:CountryList.tsx {17,18,19,22,23,35-40} showLineNumbers
+import React, { Fragment } from 'react';
+import { useQuery, gql } from '@apollo/client';
+
+interface Country {
+  name: string;
+  code: string;
+  capital: string;
+  continent: {
+    name: string;
+  };
+}
+
+interface CountryData {
+  countries: Country[];
+}
+
+interface CountryVariable {
+  code: string;
+}
+
+const COUNTRIES_QUERY = gql`
+  query Counties($code: String) {
+    countries(filter: { continent: { eq: $code } }) {
+      name
+      code
+      capital
+      continent {
+        name
+      }
+    }
+  }
+`;
+
+const CountryList = () => {
+  const continentCode = 'EU';
+  const { data, loading } = useQuery<CountryData, CountryVariable>(COUNTRIES_QUERY, {
+    variables: {
+      code: continentCode,
+    },
+  });
+
+  if (loading) return <p>Loading...</p>;
+  const { countries } = data;
+
+  return (
+    <>
+      {countries.map((c, i) => (
+        <div key={i}>
+          {c.name} - {c.capital} - {c.continent.name}
+        </div>
+      ))}
+    </>
+  );
+};
+
+export default CountryList;
+```
+
+## Mutation
+
+If you want to make a POST, PUT, PATCH, or DELETE http request, then you have to use GraphQL mutations. Since the GraphQL endpoint we are using doesn't have mutations, I'm just going to show you how it is done, but we won't be able to test it.
+
+First, you have to create a mutation operation.
+
+```tsx
+const ADD_COUNTRY_MUTATION = gql`
+  mutation AddCountry($country: Country) {
+    addCountry(country: $country) {
+      name
+      code
+      capital
+    }
+  }
+`;
+```
+
+We use the mutation keyword, and we pass the data (country) that we want to insert as an argument to the GraphQL operation. `$country` is of type Country (which is defined in your GraphQL schema in the server). After the operation is successful, we will return the name, code, and capital of the country.
+
+Next, to actually execute the operation, we need to use the `useMutation` hook provided by Apollo client.
+
+```tsx {15-23,34-38} showLineNumbers
+import { useMutation } from '@apollo/client';
+
+interface Country {
+  id: string;
+  name: string;
+  code: string;
+  capital: string;
+  continent: string;
+}
+
+interface FormData {
+  country: Country;
+}
+
+const ADD_COUNTRY_MUTATION = gql`
+  mutation AddCountry($country: Country) {
+    addCountry(country: $country) {
+      name
+      code
+      capital
+    }
+  }
+`;
+
+const CountryForm = () => {
+  const dummyFormData: FormData = {
+    id: 'FXJ32JD',
+    code: 'FR',
+    name: 'France',
+    capital: 'Paris',
+    continent: 'Europe',
+  };
+
+  const [addCountry, { data }] = useMutation<Country, FormData>(ADD_COUNTRY_MUTATION, {
+    variables: {
+      country: dummyFormData,
+    },
+  });
+
+  return (
+    <>
+      <button onClick={addCountry}>Add new country</button>
+    </>
+  );
+};
+
+export default CountryForm;
+```
+
+Like the `useQuery` hook, `useMutation` accepts 2 arguments, the first one is the mutation operation, and the second one is an object that contains the variables to pass to the mutation. Our POST data is going to be passed as a variable in the second argument.
+
+The `useMutation` hook doesn't immediately execute the query, but instead it returns to us an array that contains the mutation function. The first item in the array is the mutate function (as which we assign to `addCountry`), and the second item is the data that is returned. In the example, we are both destructuring the values ([array destructuring](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment)). You can call the `addCountry` mutation function anytime to execute the query.
+
+And that's it. Whether you want to perform a POST, PUT, or a DELETE, you basically follow the same thing.
+
+## Conclusion
+
+This is a simple introduction to using queries and mutations with React and TypeScript. There's still a lot that you can learn, but knowing the basics will definitely help you continue with your learning. Maybe in a future post, I will also show how to setup a GraphQL server.
+
+Feel free to play around with the code in this [Stackblitz project](https://stackblitz.com/edit/getting-started-with-graphql-react?file=CountryList.tsx).
+
+Thanks for reading! If this has helped you, kindly please share 😎

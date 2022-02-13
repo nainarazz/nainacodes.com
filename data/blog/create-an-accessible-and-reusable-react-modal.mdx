@@ -1,0 +1,504 @@
+---
+title: 'Create an Accessible and Reusable React Modal (TypeScript)'
+date: '2020-06-22'
+lastmod: '2020-06-22'
+tags: ['typescript', 'react', 'react hooks']
+draft: false
+summary: 'Create a modal with React and TypeScript with accessibility features.'
+images: ['/static/images/create-an-accessible-and-reusable-react-modal/cover.jpg']
+authors: ['default']
+---
+
+<Image
+  alt="laptop"
+  src="/static/images/create-an-accessible-and-reusable-react-modal/cover.jpg"
+  width={800}
+  height={400}
+  priority
+/>
+
+<ImageAttribution
+  text="Photo by Sergey Zolkin on Unsplash"
+  url="https://unsplash.com/photos/_UeY8aTI6d0"
+/>
+
+Have you ever used a modal where you cannot interact with the modal using your keyboard? I don't know about you, but I find it annoying. I do not want to use my mouse every time I want to close a modal.
+
+In this tutorial, I'm going to show you how to build an accessible, but also a reusable and responsive React modal using TypeScript and styled-components. We are going to follow the [WAI-ARIA Practices](https://www.w3.org/TR/wai-aria-practices/#dialog_modal) set by W3C to make the modal accessible.
+
+By the end of this tutorial, we will have a modal like this.
+
+![final modal to build](/static/images/create-an-accessible-and-reusable-react-modal/final-modal.png)
+
+If you're in a hurry and just want to see the code 😀, here's the [stackblitz link](https://stackblitz.com/edit/reusable-react-modal-ts).
+
+## Prerequisites
+
+Besides TypeScript, I assume you are familiar with [styled-components](https://styled-components.com/). It is just another way of styling React components in a declarative way. In case you are not familiar, I recommend you to first check the [basics in the docs](https://styled-components.com/docs/basics) before continuing with this tutorial.
+
+I also assume you already know React and hooks. If you are not familiar with TypeScript, don't worry, you can still follow this tutorial with your JavaScript knowledge.
+
+## Why create your own modal
+
+There are already many libraries out there that can be use to create a responsive, accessible modal in React. However, sometimes, you have requirements in your design that cannot be fully met by those libraries. Sometimes customizing the library to fit your need is difficult.
+
+In such a case, you might want to create your own modal, but still follow the standards that are already in place.
+
+My suggestion is that if a library can meet your needs, then just use that library; otherwise, create your own modal. The reason is that making your modal fully accessible is difficult. You may not want to go through all the hurdles.
+
+[React-modal](https://github.com/reactjs/react-modal) is a popular library you can start with.
+
+## Creating the modal component
+
+```tsx:modal.tsx
+import React, { FunctionComponent, useEffect } from 'react';
+import ReactDOM from 'react-dom';
+
+import {
+  Wrapper,
+  Header,
+  StyledModal,
+  HeaderText,
+  CloseButton,
+  Content,
+  Backdrop,
+} from './modal.style';
+
+export interface ModalProps {
+  isShown: boolean;
+  hide: () => void;
+  modalContent: JSX.Element;
+  headerText: string;
+}
+
+export const Modal: FunctionComponent<ModalProps> = ({
+  isShown,
+  hide,
+  modalContent,
+  headerText,
+}) => {
+  const modal = (
+    <React.Fragment>
+      <Backdrop />
+      <Wrapper>
+        <StyledModal>
+          <Header>
+            <HeaderText>{headerText}</HeaderText>
+            <CloseButton onClick={hide}>X</CloseButton>
+          </Header>
+          <Content>{modalContent}</Content>
+        </StyledModal>
+      </Wrapper>
+    </React.Fragment>
+  );
+
+  return isShown ? ReactDOM.createPortal(modal, document.body) : null;
+};
+```
+
+Here is the actual modal component. It is pretty much self-explanatory. We have a functional component that receives `ModalProps` described in the interface. Through the props, we could set the title and content of our modal dynamically. We can determine whether our modal is open and we can also close it programatically.
+
+Our HTML markup is created with styled-components imported from the `modal.style.tsx` file. Here is how our styles look like:
+
+```tsx:modal.style.tsx
+import styled from 'styled-components';
+
+export const Wrapper = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 700;
+  width: inherit;
+  outline: 0;
+`;
+
+export const Backdrop = styled.div`
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 500;
+`;
+
+export const StyledModal = styled.div`
+  z-index: 100;
+  background: white;
+  position: relative;
+  margin: auto;
+  border-radius: 8px;
+`;
+
+export const Header = styled.div`
+  border-radius: 8px 8px 0 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 0.3rem;
+`;
+
+export const HeaderText = styled.div`
+  color: #fff;
+  align-self: center;
+  color: lightgray;
+`;
+
+export const CloseButton = styled.button`
+  font-size: 0.8rem;
+  border: none;
+  border-radius: 3px;
+  margin-left: 0.5rem;
+  background: none;
+  :hover {
+    cursor: pointer;
+  }
+`;
+
+export const Content = styled.div`
+  padding: 10px;
+  max-height: 30rem;
+  overflow-x: hidden;
+  overflow-y: auto;
+`;
+```
+
+The interesting part of our modal is in the return statement.
+
+```tsx:modal.tsx
+return isShown ? ReactDOM.createPortal(modal, document.body) : null;
+```
+
+What is `createPortal` and why do we need it?
+
+### createProtal
+
+`createPortal` is part of the `ReactDOM` API that allows us to render a React component outside the parent component. We usually render the React app in the root div element, but by using portals, we can also render a component outside the root div.
+
+```tsx
+<html>
+  <body>
+    <div id="app-root"></div>
+    <div id="modal"></div>
+  </body>
+</html>
+```
+
+We need portals in our modal because we only want to include the modal in the DOM when it is rendered. Having the modal outside the parent container also helps us avoid conflicting z-index with other components.
+
+`createPortal` accepts two arguments: the _first_ is the component you want to render, and the _second_ is the location in the DOM where you want to render the component.
+
+In our example, we are rendering the modal at the end of the body of the html (_`document.body`_) if the modal is open. If not, then we hide it by returning `null`.
+
+## Using the modal
+
+To use our modal, we are going to create a custom React hook that will manage the state of the modal. We can use the custom hook in any component where we want to render our modal.
+
+```tsx:useModal.tsx {7} showLineNumbers
+import { useState } from 'react';
+
+export const useModal = () => {
+  const [isShown, setIsShown] = useState<boolean>(false);
+  const toggle = () => setIsShown(!isShown);
+  return {
+    isShown,
+    toggle,
+  };
+};
+```
+
+Inside our App component, we could render our modal like this.
+
+```tsx:index.tsx {7, 14}
+import React, { Component, FunctionComponent, useState } from 'react';
+import { render } from 'react-dom';
+import { Modal } from './modal/modal';
+import { useModal } from './useModal';
+
+const App: FunctionComponent = () => {
+  const { isShown, toggle } = useModal();
+
+  const content = <React.Fragment>Hey, I'm a model.</React.Fragment>;
+
+  return (
+    <React.Fragment>
+      <button onClick={toggle}>Open modal</button>
+      <Modal isShown={isShown} hide={toggle} modalContent={content} />
+    </React.Fragment>
+  );
+};
+
+render(<App />, document.getElementById('root'));
+```
+
+We use the `isShown` state and `toogle` function from the custom hook to show and hide the modal. At the moment, we are only showing a simple statement in our modal, which isn't very helpful.
+
+Let us try to create a more specific kind of modal, a confirmation modal. In your app you may need several types of modal, like a confirmation modal, a success or error modal, or even a modal with a form in it. To customize our modal depending on the type of modal we need, we can create a component and pass it as a content to our modal props.
+
+Here is the content of our confirmation modal.
+
+```tsx:confirmation-modal.tsx
+import React, { FunctionComponent } from 'react';
+import { ConfirmationButtons, Message, YesButton, NoButton } from './confirmation-modal.style';
+
+interface ConfirmationModalProps {
+  onConfirm: () => void;
+  onCancel: () => void;
+  message: string;
+}
+
+export const ConfirmationModal: FunctionComponent<ConfirmationModalProps> = (props) => {
+  return (
+    <React.Fragment>
+      <Message>{props.message}</Message>
+      <ConfirmationButtons>
+        <YesButton onClick={props.onConfirm}>Yes</YesButton>
+        <NoButton onClick={props.onCancel}>No</NoButton>
+      </ConfirmationButtons>
+    </React.Fragment>
+  );
+};
+```
+
+And the styles
+
+```tsx:confirmation-modal.style.tsx
+import styled from 'styled-components';
+
+export const ConfirmationButtons = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+
+export const Message = styled.div`
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+  text-align: center;
+`;
+
+export const YesButton = styled.button`
+  width: 6rem;
+  background-color: yellow;
+  :hover {
+    background-color: red;
+  }
+`;
+
+export const NoButton = styled.button`
+  width: 3rem;
+  background-color: lightgrey;
+  :hover {
+    background-color: grey;
+  }
+`;
+```
+
+This is a just simple component asking for a confirmation to delete an element, and the props are the actions we execute when the user clicks yes or no, and the message to display.
+
+Now we could pass this confirmation component to our modal in `App` component.
+
+```tsx:index.tsx {20-24} showLineNumbers
+import React, { Component, FunctionComponent, useState } from 'react';
+import { render } from 'react-dom';
+import { Modal } from './modal/modal';
+import { ConfirmationModal } from './confirmation-modal/confirmation-modal';
+import { useModal } from './useModal';
+
+const App: FunctionComponent = () => {
+  const { isShown, toggle } = useModal();
+  const onConfirm = () => toggle();
+  const onCancel = () => toggle();
+
+  return (
+    <React.Fragment>
+      <button onClick={toggle}>Open modal</button>
+      <Modal
+        isShown={isShown}
+        hide={toggle}
+        headerText="Confirmation"
+        modalContent={
+          <ConfirmationModal
+            onConfirm={onConfirm}
+            onCancel={onCancel}
+            message="Are you sure you want to delete element?"
+          />
+        }
+      />
+    </React.Fragment>
+  );
+};
+
+render(<App />, document.getElementById('root'));
+```
+
+This is the modal that we get.
+
+![final modal to build](/static/images/create-an-accessible-and-reusable-react-modal/final-modal.png)
+
+## Making the modal accessible
+
+An accessible website is a website that can be used by as many people as possible regardless of their disability. ["The Web must be accessible to provide equal access and equal opportunity to people with diverse abilities."](http://w3.org/standards/webdesign/accessibility)
+
+If you try to run the code we have so far, you will notice that it is not so pleasant to use (_at least for me 😀_). When you click outside the modal, it will still be open. We cannot also use `Esc` key to close modal. Let us try to fix those small details in this section.
+
+[WAI-ARIA](https://www.w3.org/TR/wai-aria-practices/#dialog_modal) gives us guidelines on how to make a modal (or _dialog_ as it is also called) accessible.
+
+- [ ] the element that will be our modal container needs to have `role` of dialog
+- [ ] the modal container needs to have `aria-modal` set to true
+- [ ] the modal container needs to have either `aria-labelledby` or `aria-label`
+- [ ] clicking outside the modal (or backdrop) will close the modal
+- [ ] keyboard interaction where:
+  - `Esc` key closes the modal
+  - pressing `Shift` moves the focus to the next tabbable element inside the modal
+  - pressing `Shift + Tab` moves the focus to the previous tabbable element
+- [ ] when open, interaction outside the modal should not be possible, such as scrolling
+- [ ] focus should be trapped inside the modal
+
+Let us see how we can implement them in our modal.
+
+### HTML attributes for accessible modal
+
+```tsx:modal.tsx {4-5} showLineNumbers
+export const Modal: FunctionComponent<ModalProps> = ({ isShown, hide, modalContent }) => {
+  const modal = (
+    <React.Fragment>
+      <Backdrop onClick={hide} />
+      <Wrapper aria-modal aria-labelledby={headerText} tabIndex={-1} role="dialog">
+        <StyledModal>
+          <Header>
+            <HeaderText>{headerText}</HeaderText>
+            <CloseButton type="button" data-dismiss="modal" aria-label="Close" onClick={hide}>
+              X
+            </CloseButton>
+          </Header>
+          <Content>{modalContent}</Content>
+        </StyledModal>
+      </Wrapper>
+    </React.Fragment>
+  );
+
+  return isShown ? ReactDOM.createPortal(modal, document.body) : null;
+};
+```
+
+I have highlighted the changes that we have added to our modal. First, for the backdrop, we have added an `onClick` event so that when it is clicked, the modal will be close.
+
+Next, we have added the attributes `aria-modal`, `aria-labelledby`, `tabIndex`, and `role` to the wrapper or container of our modal, just as specified by [WAI-ARIA](https://www.w3.org/TR/wai-aria-practices/#dialog_modal)
+
+The `tabIndex` attribute allows us to set the order of elements to be focused when pressing the tab key. We set it to _-1_ because we don't want the modal itself to be focused. Instead, we want the elements inside the modal to be focused when traversing the elements.
+
+So, in our checklist above, we have accomplished the following:
+
+- [x] the element that will be our modal container needs to have `role` of dialog
+- [x] the modal container needs to have `aria-modal` set to true
+- [x] the modal container needs to have either `aria-labelledby` or `aria-label`
+- [x] clicking outside the modal (or backdrop) will close the modal
+
+Now let us see how to add keyboard interaction with our modal.
+
+### Adding keyboard interaction
+
+To allow user to close the modal when pressing `ESC` key, we need to add an event key listener to our modal. When `ESC` key is pressed and the modal is shown, our function to hide the modal will be executed. We are going to use `useEffect` hook to achieve this.
+
+```tsx
+const onKeyDown = (event: KeyboardEvent) => {
+  if (event.keyCode === 27 && isShown) {
+    hide();
+  }
+};
+
+useEffect(() => {
+  document.addEventListener('keydown', onKeyDown, false);
+  return () => {
+    document.removeEventListener('keydown', onKeyDown, false);
+  };
+}, [isShown]);
+```
+
+Notice that we are removing the event listener in the return function of the `useEffect` hook in order to avoid memory leaks. The return function is executed when the component (modal) unmounts.
+
+- [x] keyboard interaction where:
+  - `Esc` key closes the modal
+  - pressing `Shift` moves the focus to the next tabbable element inside the modal
+  - pressing `Shift + Tab` moves the focus to the previous tabbable element
+
+So, this is also checked. By the way, the `Shift` and `Shift + Tab` functionality is also already working, we can also tick it off.
+
+### Disable scrolling
+
+One of our ARIA requirements is to not allow the user to interact with elements outside the modal, such as scrolling.
+
+To disable scrolling, we are also going to add some code to our `useEffect` hook.
+
+```tsx {2} showLineNumbers
+useEffect(() => {
+  isShown ? (document.body.style.overflow = 'hidden') : (document.body.style.overflow = 'unset');
+  document.addEventListener('keydown', onKeyDown, false);
+  return () => {
+    document.removeEventListener('keydown', onKeyDown, false);
+  };
+}, [isShown]);
+```
+
+When the modal `isShown`, we set the `overflow` style property of the body of the page to hidden to hide the scrollbar. To test this, we are going to later add some dummy text to our App component until it overflows, and see if hiding the scroll works when the modal is shown.
+
+- [x] when open, interaction outside the modal should not be possible, such as scrolling
+
+### Focus trap
+
+The last item in our checklist is to trap the focus inside the modal. We can traverse our elements inside the modal by clicking `Shift` or `Shift + Tab`. When we reach the last tabbable element, if we press Shift, the focus will move to an element outside the modal.
+
+But that is not what we want. What we want is when we reach the last tabbable element and we keep traversing with the Shift key, the focus will go to the first tabbable element. It like a loop. Once we reach the end of the loop, we start from the beginning.
+
+We can try to implement this functionality by getting all the focusable elements in our modal, and then loop through them to trap the focus, but since someone has already done this functionality before, we are just going to use an npm package called `react-focus-lock`.
+
+```tsx
+npm i react-focus-lock
+```
+
+After installing the package, we can wrap our modal component with `<FocusLock>` component provided by the library.
+
+```tsx:modal.tsx {11,23} showLineNumbers
+import FocusLock from 'react-focus-lock';
+
+// other codes and import above
+
+export const Modal: FunctionComponent<ModalProps> = ({ isShown, hide, modalContent }) => {
+  // other codes above
+
+  const modal = (
+    <React.Fragment>
+      <Backdrop onClick={hide} />
+      <FocusLock>
+        <Wrapper aria-modal aria-labelledby={headerText} tabIndex={-1} role="dialog">
+          <StyledModal>
+            <Header>
+              <HeaderText>{headerText}</HeaderText>
+              <CloseButton type="button" data-dismiss="modal" aria-label="Close" onClick={hide}>
+                X
+              </CloseButton>
+            </Header>
+            <Content>{modalContent}</Content>
+          </StyledModal>
+        </Wrapper>
+      </FocusLock>
+    </React.Fragment>
+  );
+
+  return isShown ? ReactDOM.createPortal(modal, document.body) : null;
+};
+```
+
+Now when the modal is open, our focus after pressing `Shift` will only be inside the modal.
+
+Tick.
+
+- [x] focus should be trapped inside the modal
+
+Wow! Now we have a fully functioning modal with accessible features. Congrats 😀 🙌.
+
+## Conclusion
+
+You can test all the functionalities we have implemented in this [stackblitz link](https://stackblitz.com/edit/reusable-react-modal-ts). I have added dummy text to the App component so that the content overflows and you can test if the scroll is disabled when the modal is shown. Don't be afraid to play around with it and customize it according to your want.
+
+If you have liked this post or it has helped you, kindly please share it 😀

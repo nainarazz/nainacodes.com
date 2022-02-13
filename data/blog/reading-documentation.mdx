@@ -1,0 +1,109 @@
+---
+title: 'Learn Something New by Reading the Documentation (docs)'
+draft: false
+date: '2020-05-24'
+lastmod: '2020-05-24'
+tags: ['documentation']
+summary: 'How do we read a documentation efficiently? Find out in this post.'
+images: ['/static/images/reading-documentation/cover.jpg']
+authors: ['default']
+---
+
+<Image
+  alt="soft skills of software developers"
+  src="/static/images/reading-documentation/cover.jpg"
+  width={800}
+  height={400}
+  priority
+/>
+
+<ImageAttribution
+  text="Photo by Sharon McCutcheon on Unsplash"
+  url="https://unsplash.com/photos/tn57JI3CewI"
+/>
+
+For most of us, the documentation is the last resource we want to consult when trying to learn something new. We usually think it is just a big wall of boring descriptive text that we don't all need. Instead, we go out in search of a shorter and livelier version of it in video tutorials and blog posts.
+
+But can we always avoid the docs? I don't think so.
+
+If you are a content creator of a course, reading the docs is a must. How can we have the video tutorials we all like if no one reads the docs? The content of our tutorials comes from the docs.
+
+It the single source of truth. Other tutorials or materials might contain outdated, misleading or wrong information, but the official documentation will rarely do so. If there is something new in the language/framework API, you can immediately read the docs to know how to use it. You don't have to wait for someone else's blog post or tutorial.
+
+In this post, let us see how we can go about reading developer docs for learning. Not all docs are bad. There are many that are pleasing and enjoyable to read and follow.
+
+## Navigating the documentation
+
+A good documentation is divided up into several sections, and each section serves a different purpose. This helps the reader find the information they need quickly.
+
+Let us say you want to learn React. Where do you start?
+
+### Getting started
+
+You should start here. This section contains the necessary setup to use the framework. What software and libraries do you need to pre-install? How do you install the framework?
+
+Everything you need to prepare your environment is described in this section. Sometimes it also contains the simplest example of using the framework.
+
+### Tutorials
+
+This contains a step-by-step explanation on how to use the basic features of the framework. If you are a beginner, you should follow the tutorial because it will give you a hands-on feel of the framework.
+
+In the [official React tutorial](https://reactjs.org/tutorial/tutorial.html#what-are-we-building), you build an interactive tic-tac-toe game.
+
+### Guides
+
+The guides contain information on how to achieve a specific thing with the framework. How do you create a component? State? Higher-order components? These are in the the [main concept](https://reactjs.org/docs/hello-world.html) and [advance guide](https://reactjs.org/docs/higher-order-components.html) of the React docs.
+
+The guide provides many code samples. You can use the guides as a reference on how to do things.
+
+### API reference
+
+The API reference contains all the information needed to work with the API. It describes all the classes and functions that are available to use in the framework. It contains a description of what they do, the arguments, and return types.
+
+You should check the API reference to gain a deeper knowledge of the capabilities of the framework.
+
+In case you forget the syntax or arguments of a function, you can quickly check the API reference.
+
+Most of the documentations out there contains the sections I mentioned or similar, so you should be able to know where to check information.
+
+You don't have to read the documentation in the order that I listed above. How you go about it all depends on the information you need and your level.
+
+## Understanding function parameters
+
+If you have visited the [MDN web docs](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map), I'm sure have seen something like this.
+
+```javascript
+let new_array = arr.map(function callback( currentValue[, index[, array]]) {
+    // return element for new_array
+}[, thisArg])
+```
+
+This is the syntax for the `Array.map()` function. Many have been confused what the square brackets mean, including me, but it simply means that a parameter is **_optional_**.
+
+Let us try to break down the arguments of the function.
+
+The first argument is a callback function. The callback function can receive up to 4 arguments. The first argument is the currentValue in the array, and it is required.
+
+After the **currentValue**, we see index preceded by a square bracket with a comma `[, index` . This indicates that **index** is an optional argument. We see the same thing with `[, array`, which also means that **array** is an optional argument. Then we close the square brackets `]]`.
+
+The second argument of the `map()` function is a `this` value that will be used when executing the callback. As you might have already guessed, it is also optional.
+
+Many docs today no longer use this syntax because it is confusing to readers. Instead, they just indicate in text whether the argument is required or optional.
+
+## What to do if you don't understand the documentation
+
+Sometimes the documentation is just bad. Or it can be good, but you are still confused and not sure.
+
+What I usually first do is to look for other examples outside the documentation. I will google the topic and look for more explanations in blog posts, and stackoverflow answers.
+
+If I still couldn't find what I'm looking for, I will ask in online community groups --- Stackoverflow, Twitter, Spectrum Chat, Discord.
+
+You can also consult YouTube for video resources, or look for code in GitHub that uses the technology you are learning.
+
+## Conclusion
+
+We should not be afraid of reading the docs. It is the primary source of information. We can use it to learn new things and keep ourselves updated.
+
+By learning how to navigate around documentation, we can quickly find the information we need.
+
+Do you read the docs for learning, or you use other resources? Please share your experience on Twitter.

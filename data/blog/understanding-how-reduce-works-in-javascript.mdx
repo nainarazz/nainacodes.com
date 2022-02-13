@@ -1,0 +1,216 @@
+---
+title: 'Understanding How Array.reduce works in JavaScript'
+draft: false
+date: '2020-05-10'
+lastmod: '2020-05-10'
+tags: ['javascript']
+summary: 'JavaScript has a lot of functions to manipulate and transform elements in an array. In this post, we are going to look in the Array.reduce() function.'
+images: ['/static/images/understanding-how-reduce-works-in-javascript/reduce-cover.jpg']
+authors: ['default']
+---
+
+<Image
+  alt="cover image"
+  src="/static/images/understanding-how-reduce-works-in-javascript/reduce-cover.jpg"
+  width={800}
+  height={400}
+  priority
+/>
+
+<ImageAttribution
+  text="Photo by Markus Spiske on Unsplash"
+  url="https://unsplash.com/photos/wkieEIVb1pA"
+/>
+
+JavaScript has a lot of functions to manipulate and transform elements in an array. One of those is the `Array.reduce` function. As its name implies, it is used to reduce an array of values to a single value. It is really powerful, yet many JavaScript developers don't know how to use it nor how to take advantage of its power.
+
+In this post, I want to give you a better understanding of how `reduce` works, and what you could do with it.
+
+## Syntax
+
+Let us start with the syntax.
+
+```javascript
+arr.reduce(callback, initialValue);
+```
+
+The first argument of reduce is a callback function that is executed on each iteration of the elements in the array. In case you are not familiar with callbacks, here is an [article](https://www.javascripttutorial.net/javascript-callback/) about callbacks.
+
+On each iteration, the callback returns a value, and that value is going to be used in the next iteration. This value is stored in what we call `accumulator`, and after iterating through all the values in the array, the final value of the accumulator is returned.
+
+The second argument is the initial value. It can be a number, a string, an array, or an object. It will be the initial value of the accumulator.
+
+This will all be clearer when we do the example below.
+
+### Callback signature
+
+The callback function receives up to four arguments. It has a function signature like this.
+
+```javascript
+function reduceCallback(accumulator, currentValue, index, srcArray) {
+  // code to do some manipulation
+  return accumulator;
+}
+```
+
+Most of the time you will only use the first three arguments.
+
+- **accumulator**. It contains the return value of the last callback. If we are at the first element, its value is going to be the `initialValue`. Its final value will be the return value of the `reduce` function.
+- **currentValue**. This is the current element in the array during the iteration.
+- **index**. The position of the element in the array.
+- **srcArray**. This is the array we are iterating upon.
+
+In the callback function, **it is important that you return always return the accumulator**, otherwise your function will not work as intended.
+
+**It is also important to always specify an initial value.** If initial value is not specified, the reducer will take the first item in the array as an initial value, and it might not also work as you desire.
+
+## How it works
+
+Let us suppose we want to add the sum of numbers inside an array. Using a `for ... of` loop we can do it like this.
+
+```javascript
+// initialization
+let sum = 0;
+
+// array of values
+const numbers = [1, 2, 3, 4, 5];
+
+for (const num of numbers) {
+  sum += num;
+}
+
+console.log('sum:', sum); // outputs 15
+```
+
+We have declared and initialized a sum variable to 0. We also have an array of numbers. For each number in the array, we add the number to the sum, then console.log the sum. I think this is simple enough.
+
+To achieve the same output using `reduce`, we could do the following.
+
+```javascript
+const numbers = [1, 2, 3, 4, 5];
+const add = function (acc, curr) {
+  return acc + curr;
+};
+const sum = numbers.reduce(add, 0);
+console.log('sum:', sum); // outputs 15
+```
+
+As I have explained above, the `reduce` function takes a callback function as its first argument. Our callback function here is the `add` function, and we are passing it as the first argument to the reduce function.
+
+Here we are also initializing our sum value to 0. Notice that 0 in the reduce function?
+
+If we try to console log the values of the `acc` and `curr`, we would be able to understand it better.
+
+```javascript
+const numbers = [1, 2, 3, 4, 5];
+const add = function (acc, curr) {
+  console.log(`accumulator: ${acc}, current: ${curr}`);
+  return acc + curr;
+};
+const sum = numbers.reduce(add, 0);
+console.log('sum:', sum); // outputs 15
+```
+
+Output.
+![console logs accumulator value](/static/images/understanding-how-reduce-works-in-javascript/accumulator-console-log.png)
+
+We see 5 console logs for `add` because we have 5 elements in our array. The first value of our accumulator is 0, because we passed 0 as the `initialValue` of the reducer. On each iteration, our current value is added to the accumulator. The final call of the callback returns to us an accumulator value of 10, and current value of 5. When we add 10 + 5, we get 15, which is the final value of our accumulator. And that is the final value that is returned by `reduce`.
+
+Our code above can be shortened by using anonymous function and implicit return.
+
+```javascript
+const numbers = [1, 2, 3, 4, 5];
+const sum = numbers.reduce((acc, curr) => acc + curr, 0);
+```
+
+## Interesting use cases of reduce
+
+What makes reduce powerful is that the type of the accumulator value doesn't have to be the same as the type of the initial value of the reducer. That means you can transform an array to an object, a number, string, or another array.
+
+### Creating a tally of items
+
+You want to know the total for each item in the array. In this example, we are transforming an array of strings into an object.
+
+```javascript
+const food = ['pasta', 'rice', 'brocolli', 'pasta', 'cereal', 'chicken', 'rice', 'brocolli'];
+
+const basket = food.reduce((acc, curr) => {
+  if (!acc[curr]) {
+    acc[curr] = 1;
+  } else {
+    acc[curr] += 1;
+  }
+
+  return acc;
+}, {});
+console.log(basket); // { pasta: 2, rice: 2, brocolli: 2, cereal: 1, chicken: 1}
+```
+
+### Flattening an array of arrays
+
+You want to transform an array of arrays into a single array.
+
+```javascript
+const numbers = [
+  [1, 2],
+  [3, 4],
+  [5, 6],
+  [7, 8],
+  [9, 10],
+];
+const flattened = numbers.reduce((acc, curr) => acc.concat(curr), []);
+console.log(flattened); // [1,2,3,4,5,6,7,8,9,10]
+```
+
+A new feature in ES10 allows you to achieve the same thing with `Array.flat()`.
+
+```javascript
+const flattened = numbers.flat();
+console.log(flattened); // [1,2,3,4,5,6,7,8,9,10]
+```
+
+### Calculating total
+
+We already saw this example above. We want to perform an arithmetic operation on the items in the array.
+
+```javascript
+const numbers = [2, 4, 6];
+const product = numbers.reduce((acc, curr) => curr * acc, 1);
+console.log(product); // 48
+```
+
+### Pipelining functions
+
+Piping refers to a series of function that transforms an initial value to a final value. The output of the previous function will be input of the next function. We can create our pipe function with `reduce`.
+
+```javascript
+const square = (value) => value * value;
+const double = (value) => value * 2;
+const halve = (value) => value / 2;
+
+const pipeline = [square, double, halve];
+
+const result = pipeline.reduce(function (total, func) {
+  return func(total);
+}, 3);
+
+console.log(result); // 9
+```
+
+So here we have a pipeline that squares a value, doubles it, and then halves it. We execute the pipeline with `reduce`.
+
+If we reorder our pipeline, it will give us a different result.
+
+```javascript
+const pipeline = [double, square, halve];
+
+const result = pipeline.reduce(function (total, func) {
+  return func(total);
+}, 3);
+
+console.log(result); // 18
+```
+
+## Conclusion
+
+That's it. At first it might seem intimidating to use, but with practice, it will become more intuitive to you. I hope this short post has reduced your fear of using `reduce` function 😉.

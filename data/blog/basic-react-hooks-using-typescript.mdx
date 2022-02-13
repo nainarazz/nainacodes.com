@@ -1,0 +1,247 @@
+---
+title: 'Basic React Hooks using TypeScript - useState, useEffect'
+date: '2020-03-29'
+lastmod: '2020-03-29'
+draft: false
+tags: ['react', 'react hooks', 'typescript']
+summary: 'In this we are going to see how to use basic react hooks like useState and useEffect with TypeScript. We are also going to learn how to create custom react hooks.'
+images: ['/static/images/basic-react-hooks-using-typescript/fishing-hook.jpg']
+authors: ['default']
+---
+
+<Image
+  alt="fishing rod"
+  src="/static/images/basic-react-hooks-using-typescript/fishing-hook.jpg"
+  width={800}
+  height={400}
+  priority
+/>
+
+<ImageAttribution
+  text="Photo by James Wheeler on Unsplash"
+  url="https://unsplash.com/photos/HJhGcU_IbsQ"
+/>
+
+React hooks are the new way of accessing React features in a React component. We can now use functions to create components that can have access to state and lifecycle methods.
+
+While React hooks don't completely replace class based React components, they allow us to write cleaner and more reusable components by writing smaller composable components.
+
+In this post, I’m going to show you how to **use the basic React hooks** using TypeScript and how to **create your own hooks**. TypeScript will add types to our code. Typed code has many advantages, but one of the great advantages is that it adds a nice auto completion to our code editor, which makes writing code faster and comfortable.
+
+Hooks are simply JavaScript functions, but they need to abide to two rules:
+
+1.  Only call hooks at the top level. Do not call them inside loops, conditions, or nested functions.
+2.  Only call hooks from React functions. You should not call them from regular JavaScript functions.
+
+Ok, let’s dive into code.
+
+## useState
+
+`useState` is the simplest hook to use, and is the one you are going to use most often. It allows us to create and use state inside a functional component.
+
+### Declaring state
+
+```typescript
+import React, { useState } from 'react';
+
+interface Person {
+  firstName: string;
+  lastName: string;
+  age: number;
+}
+
+const Person: React.FunctionComponent<Person> = (props) => {
+  const [person, setPerson] = useState<Person>({
+    firstName: props.firstName,
+    lastName: props.lastName,
+    age: props.age,
+  });
+};
+```
+
+The useState function accepts the initial state as its argument. It returns an array of values which is the state and the function to update the state. We use ES6 array destructuring to get those values. By convention, we name the updater function by prefixing the state name with the word `set`.
+
+### Reading values
+
+To read the state value from hooks, we just access the destructured variable directly. Using the example above, we could do:
+
+```jsx
+<div>First Name: {person.firstName}</div>
+<div>Last Name: {person.lastName}</div>
+<div>Age: {person.age}</div>
+```
+
+### Updating Values
+
+To update the state, we use the updater function returned by the useState function.
+
+```typescript
+setPerson({
+  firstName: 'John',
+  lastName: 'Warren',
+  age: 24,
+});
+```
+
+Here is the full example.
+
+```typescript
+import React, { useState, ChangeEvent } from 'react';
+import { render } from 'react-dom';
+
+interface Person {
+  firstName: string;
+  lastName: string;
+  age: number;
+}
+
+const Person: React.FunctionComponent<Person> = (props) => {
+  const [person, setPerson] = useState<Person>({
+    firstName: props.firstName,
+    lastName: props.lastName,
+    age: props.age,
+  });
+
+  const handleInput = (event: ChangeEvent<HTMLInputElement>) => {
+    const elementName = event.target.name;
+    setPerson({
+      ...person,
+      [elementName]: event.target.value,
+    });
+  };
+
+  return (
+    <React.Fragment>
+      <div>
+        <label htmlFor="firstName">First Name</label>
+        <input name="firstName" value={person.firstName} onChange={handleInput} />
+      </div>
+      <div>
+        <label htmlFor="lastName">Last Name</label>
+        <input name="lastName" value={person.lastName} onChange={handleInput} />
+      </div>
+      <div>
+        <label htmlFor="age">age</label>
+        <input name="age" type="number" value={person.age} onChange={handleInput} />
+      </div>
+      <p>
+        My name is {person.firstName} {person.lastName}. I am {person.age}
+      </p>
+    </React.Fragment>
+  );
+};
+```
+
+### Lazy Initial State
+
+The initial state passed as argument to useState is only used during the initial render. In succeeding renders, it will be disregarded. Sometimes you may want to compute the state from an expensive function like this.
+
+```typescript
+const someExpensiveOperation = (): Person => {
+  // some expensive operations
+  console.log('expensive');
+
+  return {
+    firstName: 'John',
+    lastName: 'Warren',
+    age: 24,
+  };
+};
+
+const [person, setPerson] = useState<Person>(someExpensiveOperation());
+```
+
+Whenever there is a re-render, the `someExpensiveOperation()` will always be called, which is not what we really want. To avoid this, we can initialize the state lazily by providing a function as argument, and it will only be called once on the initial render.
+
+```typescript
+const [person, setPerson] = useState<Person>(() => someExpensiveOperation());
+```
+
+## useEffect
+
+If you have used React class lifecycle methods before, `useEffect` hook is like the `componentDidMount`, `componentDidUpdate`, and `componentWillUnmount` combined.
+
+`useEffect` hook allows you to perform side effects in function components. `useEffect` takes two arguments, the first is the function to run, and the second is an array of dependencies that the effect will listen to. If any of the dependencies change, it will run the effect again.
+
+```typescript
+import React, { useState, useEffect, ChangeEvent } from 'react';
+
+const Person: React.FunctionComponent<Person> = (props) => {
+  const [person, setPerson] = useState<Person>({
+    firstName: 'John',
+    lastName: 'Warren',
+    age: 24,
+  });
+
+  const celebrateBirthday = (event: React.MouseEvent) => {
+    setPerson({
+      ...person,
+      age: person.age + 1,
+    });
+  };
+
+  useEffect(() => {
+    console.log('effect will run once');
+  }, []);
+
+  useEffect(() => {
+    console.log('effect will always run');
+  });
+
+  useEffect(() => {
+    console.log('effect will run if age has changed');
+  }, [person.age]);
+
+  return (
+    <React.Fragment>
+      <button onClick={celebrateBirthday}>Happy Birthday</button>
+    </React.Fragment>
+  );
+};
+```
+
+### Effects with Clean up
+
+Sometimes we want to do some cleaning up inside the effect. For example, when we set up a subscription to some external data source, we need to make sure that we unsubscribe to this when the component unmounts. Otherwise we might introduce a memory leak. To tell React to perform clean up, we return a function inside the `useEffect` hook.
+
+```typescript
+useEffect(() => {
+  // subscribe to some data source
+  console.log('subscribe to some data source');
+  return () => {
+    // unsubscribe to avoid memory leak
+    console.log('this will run when the component unmounts');
+  };
+});
+```
+
+## Creating Custom Hooks
+
+React hooks are just JavaScript functions. That means we can decide what arguments it should take, and what value it should return. By convention, its name should always start with `use` so that we can easily tell that the function is a React hook. The Rules of Hooks above 👆 should be adhered to when creating custom hooks.
+
+Here is a simple example of custom hook. It returns the state of whether a modal is shown or not, and a toggle function to manipulate this state.
+
+```typescript
+export const useModal = () => {
+  const [isShown, setIsShown] = useState<boolean>(false);
+  const toggle = () => setIsShown(!isShown);
+  return {
+    isShown,
+    toggle,
+  };
+};
+```
+
+Using custom hooks is the same as using the built-in React hooks.
+
+```typescript
+const { isShown, toggle } = useModal();
+```
+
+## Recap
+
+These are the most basic React hooks, but there are many other hooks for different use cases that React provides to us. I will be discussing them in another post.
+
+So , if you want to use state inside a functional component, you can use the `useState` hook. If you want to perform side effects, you can use the `useEffect` hook. You can also create your own custom hooks if these doesn't meet your needs.
+
+Send in your thoughts, comments, and feedback on [this post on DEV](https://dev.to/nainarazz/basic-react-hooks-using-typescript-usestate-useeffect-58g0).

@@ -1,0 +1,127 @@
+---
+title: 'Understand React Key Prop'
+draft: false
+date: '2020-06-08'
+lastmod: '2020-06-08'
+tags: ['react', 'javascript']
+summary: 'We usually use key props in a list, but did you know we could use it in just any component? Let us see useful functionality we could do with React key prop.'
+images: ['/static/images/understand-react-key-prop/key.jpg']
+authors: ['default']
+layout: PostSimple
+---
+
+<Image
+  alt="key"
+  src="/static/images/understand-react-key-prop/key.jpg"
+  width={1200}
+  height={400}
+  priority
+/>
+
+<ImageAttribution
+  text="Photo by Kelly Sikkema on Unsplash"
+  url="https://unsplash.com/photos/Nel8STCcWy8"
+/>
+
+Most of us have first encountered the React key prop when displaying a list of elements. If we forget to add the `key` prop to each element in the list, the browser console throws us a warning.
+
+> Warning: Each child in a list should have a "unique" key prop.
+
+The key props is used by React to determine which of the components in the collection needs to be re-rendered instead of re-rendering the whole collection. After adding a key to each element, the warning disappears.
+
+But the key prop can be used on just any React component (not only in lists). When we change the key on a component, the current instance of the component is discarded and replaced with a new one.
+
+Let us see with this simple example.
+
+```jsx {52}
+import React, { useState, useEffect } from 'react';
+import { render } from 'react-dom';
+
+const FruitSmoothie = ({ name }) => {
+  const ratings = ['bad 😞', 'good 😊', 'very good 😎'];
+  const [rating, setRating] = useState(ratings[1]);
+
+  const onChangeRating = (event) => {
+    setRating(event.target.value);
+  };
+
+  useEffect(() => {
+    console.log('mounted');
+    return () => {
+      console.log('unmounted');
+    };
+  }, []);
+
+  return (
+    <div>
+      <div style={{ display: 'inline-block' }}>You are making a/an {name} smoothie 🥤.</div>
+      <select onChange={onChangeRating}>
+        {ratings.map((r) => (
+          <option key={r} value={r}>
+            {r}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+};
+
+const App = () => {
+  const fruits = ['avocado 🥑', 'strawberry 🍓', 'banana 🍌', 'pear 🍐'];
+
+  const [selectedFruit, setSelectedFruit] = useState(fruits[0]);
+
+  const onSelectFruit = (event) => {
+    setSelectedFruit(event.target.value);
+  };
+
+  return (
+    <>
+      <select onChange={onSelectFruit}>
+        {fruits.map((f) => (
+          <option key={f} value={f}>
+            {f}
+          </option>
+        ))}
+      </select>
+
+      <FruitSmoothie key={selectedFruit} name={selectedFruit} />
+    </>
+  );
+};
+
+render(<App />, document.getElementById('root'));
+```
+
+The code above allows you to select a fruit. After picking a fruit, a statement about a smoothie from your selected fruit will show. You can also give a rating.
+
+![output](/static/images/understand-react-key-prop/output.png)
+
+Notice that in the `<FruitSmoothie />` component, I have added a console.log in the `useEffect` hook to show when the component mounts and unmounts.
+
+I have also put a key prop in the `<FruitSmoothie />` component. When you select a fruit from the dropdown, the `selectedFruit` state is updated and the key for the `<FruitSmoothie />` changes.
+
+We see in the console logs that the component is unmounted, then mounted again. This means that whenever the key changes, a new instance of the component is being created.
+
+```bash
+unmounted
+mounted
+```
+
+The state of the component is also reset. If you give a rating of very good, then change the fruit, the rating will be set back to the default rating (_which is the good rating_).
+
+The lesson from this post is that we can use the key prop to **force a re-render on a component** and to **reset its state**.
+
+A practical example of its usage is when working with a form.
+
+In your form, you control its state, validation, and the status of each input. For each input, you track whether it has been touched or changed.
+
+Now in order to reset the form, you can create a function that will set the state of the form and all the components in it back to their original value. It might involve some complex logic to implement.
+
+But another simple way is to just change the key prop in the form. All the components inside the form will be reset and will give you a new fresh form.
+
+## More resources
+
+[Recommendation fully uncontrolled component with a key](https://reactjs.org/blog/2018/06/07/you-probably-dont-need-derived-state.html#recommendation-fully-uncontrolled-component-with-a-key)
+
+[Understanding react key prop](https://kentcdodds.com/blog/understanding-reacts-key-prop)

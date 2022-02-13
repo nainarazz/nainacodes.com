@@ -1,0 +1,102 @@
+---
+title: 'Moving My Blog From Next.js To Gatsby'
+draft: false
+date: '2020-05-03'
+lastmod: '2020-05-03'
+tags: ['react', 'nextjs', 'gatsby']
+summary: 'In this post, I share my experiences of moving my blog from Next.js to Gatsby.'
+images: ['/static/images/moving-my-blog-from-next-to-gatsby/cover.png']
+authors: ['default']
+---
+
+<Image
+  alt="nextjs to gatsby"
+  src="/static/images/moving-my-blog-from-next-to-gatsby/cover.png"
+  width={800}
+  height={400}
+  priority
+/>
+
+It has just been a month since I created my blog site using Next.js and now I have already completely rewritten it in Gatsby. Well, it is still a small site with a few pages in it, so rewriting the whole thing all over again wasn't a big deal. It took me around 2 weeks of working a few hours every night to do the rework.
+
+If you are in the React land, I'm pretty sure you must have already heard all the hype of how fast Gatsby is and how easy and quick it is to create websites with it. A lot of tutorials have been written on how to create a simple blog or portfolio site with Gatsby. Many of the software developer blogs I follow are also written in Gatsby. This has just enticed me even more to try the framework.
+
+So after getting my hands dirty with it, I can now as well testify that it is indeed fast. The developer experience is just fantastic. I was able to focus more on the design and functionality aspect of the site, rather than on the technical details on how to do things.
+
+In this post, I want to share some of my findings on the framework, the things that I liked, and also didn't like.
+
+## Plugins
+
+Gatsby comes with a plugin system. This is the feature that I liked most.
+
+According to the docs,
+
+> Gatsby plugins are Node.js packages that implement Gatsby APIs.
+
+These are helpers and tools written by the community to provide certain functionality to your site. Plugins are great because you can use already made solutions for certain tasks. You therefore write less code.
+
+Do you need SEO in your site? Well, there's a plugin for that. Do you need responsive images? Someone already did it. Do you need markdown for your blog? There's a plugin for that.
+
+Typography? Offline support? PWA support? Google Analytics? These problems have already been solved, and you just have to use them. This is one of the reasons why building a site with Gatsby is quick and easy.
+
+With Next.js, I have to implement custom functions to extract metadata from a markdown file. I also have to write more code to make my images responsive. With Gatsby, however, I just have to install and configure the plugin and use it.
+
+## Starters
+
+Starters are templates for creating a website. They quickly allow you to bootstrap your website in few minutes. I used [gatsby-advanced-started](https://www.gatsbyjs.org/starters/Vagr9K/gatsby-advanced-starter/) to build this website. Although it only provided a skeleton and without any styling, it has provided a lot of advanced features I have needed out of the box.
+
+The Gatsby official site has many starters available for anyone to use. It has starters from portfolios, blogs, and CMSs to e-commerce sites.
+
+In comparison to Gatsby, there are not much starters available in Next.js.
+
+## GraphQl
+
+I love GraphQl. I actually like the way you describe data in GraphQl and how you can query the data you need. The syntax is very pleasing to me.
+
+Gatsby uses GraphQl in its data layer. Since GraphQl doesn't assume where your data source is coming from, it allows Gatsby to get data from any sources. It simply needs an interface of communication with the data source. This is really powerful!
+
+You can have your data source from CMSs (Wordpress, Drupal, Contentful, etc), markdown files, databases, filesystems, APIs, JSON and many others.
+
+## Blazing fast
+
+This is one of the selling points of using Gatsby. But how does Gatsby achieve such fast speed?
+It applies several optimization techniques out of the box.
+
+1.  Code splitting. This is a technique used in React in general and not Gatsby specific. By code splitting, the bundle size is reduced because you only load JavaScript needed for the page.
+2.  Prefetching and caching. This is a technique where the browser downloads or prefetches documents that a user might need in the future (from linked pages). Then when a user clicks on a link, the request document might already be in the cache, which makes loading faster.
+3.  Inline critical CSS. Explanation from [Web dev](https://web.dev/extract-critical-css/) about critical css.
+
+    > Critical CSS is a technique that extracts the CSS for above-the-fold content in order to render content to the user as fast as possible.<br/>
+    > Above-the-fold is all the content a viewer sees on page load, before scrolling.
+
+    Gatsby identifies which CSS is used for the page, and only applies that CSS for the page.
+
+4.  Minifications. The final JavaScript bundle is minified during build time.
+
+For more details on how Gatsby optimizes site performance, check out this blog post by [Kyle Matthews - Web Performance 101—also, why is Gatsby so fast?](https://www.gatsbyjs.org/blog/2017-09-13-why-is-gatsby-so-fast/)
+
+## Great developer experience
+
+Like Next.js, Gatsby tries to make developers as productive as possible. You get [HMR (Hot Module Replacement)](https://webpack.js.org/concepts/hot-module-replacement/) out of the box. Any changes you make to the code are immediately seen in the browser (live reload).
+
+The documentation of the framework is solid and the maintainers keep improving it. I especially like the tutorials and recipes for accomplishing specific tasks.
+
+The plugin system, as I have described above, also makes it easy for developers to extend existing functionalities.
+
+## My little pain points
+
+_Note. These are of my experiences of working with Gatsby with my own machine. It might actually be different for others._
+
+The one thing I noticed is that it takes time to start the development server. I don't know if it is my machine that is not powerful enough (8GB RAM, corei3), or it just takes up a lot of resources in development mode. I feel that it is kinda heavy to run the dev server. With Next.js, however, I don't have the same problem.
+
+Sometimes I also have to stop the server, clear the `cache` folder, and run the server again to see the changes I made. Sometimes it just misbehaves.
+
+## Overall
+
+I don't regret moving my blog site to Gatsby. I have learned something new, and it has been a rewarding experience. I would recommend anyone building a static website, such as a blog, to go with Gatsby.
+
+By the way, Next.js is awesome. I still love it, and I will definitely still use it when creating React apps. Gatsby will not always be the right tool to use for a certain project.
+
+To end, here is the Lighthouse score for this site.
+
+![lighthousescore](/static/images/moving-my-blog-from-next-to-gatsby/lighthouse-report.png)
