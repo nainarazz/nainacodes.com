@@ -7,6 +7,7 @@ import ThemeSwitch from './ThemeSwitch';
 import { ReactNode, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useDocumentScrollThrottled } from 'hooks/useDocumentScrollThrottled';
+import { useEffect } from 'react';
 
 interface Props {
   children: ReactNode;
@@ -14,6 +15,8 @@ interface Props {
 
 const LayoutWrapper = ({ children }: Props) => {
   const router = useRouter();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let timer: any;
   const [shouldHideHeader, setShouldHideHeader] = useState(false);
   const [shouldShowShadow, setShouldShowShadow] = useState(false);
 
@@ -27,10 +30,12 @@ const LayoutWrapper = ({ children }: Props) => {
 
     setShouldShowShadow(currentScrollTop > 2);
 
-    setTimeout(() => {
+    timer = setTimeout(() => {
       setShouldHideHeader(isScrolledDown && isMinimumScrolled);
     }, TIMEOUT_DELAY);
   });
+
+  useEffect(() => () => clearTimeout(timer));
 
   return (
     <>

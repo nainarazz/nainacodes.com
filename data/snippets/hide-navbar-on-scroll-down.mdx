@@ -1,0 +1,72 @@
+---
+title: 'useDocumentScroll'
+date: '2022-02-13'
+lastmod: '2022-02-13'
+tags: ['typescript', 'react', 'react hooks']
+draft: false
+summary: 'Hide navbar when scrolling down, but show it when scrolling up'
+images: ['/static/snippet-logos/react.png']
+authors: ['default']
+---
+
+This hook is used to execute a callback code when the user scrolls.
+
+```typescript:useDocumentScroll.tsx
+import { useEffect, useState } from 'react';
+import { throttle } from 'lodash';
+
+export function useDocumentScroll(
+  callback: (params: { previousScrollTop: number; currentScrollTop: number }) => void
+) {
+  const [, setScrollPosition] = useState(0);
+  let previousScrollTop = 0;
+
+  function handleDocumentScroll() {
+    // eslint-disable-next-line no-undef
+    const { scrollTop: currentScrollTop } = document.documentElement || document.body;
+
+    setScrollPosition((previousPosition) => {
+      previousScrollTop = previousPosition;
+      return currentScrollTop;
+    });
+
+    callback({ previousScrollTop, currentScrollTop });
+  }
+
+  const handleDocumentScrollThrottled = throttle(handleDocumentScroll, 250);
+
+  useEffect(() => {
+    // eslint-disable-next-line no-undef
+    window.addEventListener('scroll', handleDocumentScrollThrottled);
+
+    // eslint-disable-next-line no-undef
+    return () => window.removeEventListener('scroll', handleDocumentScrollThrottled);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+}
+```
+
+This is how you use the hook in a component to show or hide navbar (like on this site).
+
+```typescript
+let timer: any;
+const [shouldHideHeader, setShouldHideHeader] = useState(false);
+const [shouldShowShadow, setShouldShowShadow] = useState(false);
+
+const MINIMUM_SCROLL = 80;
+const TIMEOUT_DELAY = 200;
+
+useDocumentScroll((callbackData) => {
+  const { previousScrollTop, currentScrollTop } = callbackData;
+  const isScrolledDown = previousScrollTop < currentScrollTop;
+  const isMinimumScrolled = currentScrollTop > MINIMUM_SCROLL;
+
+  setShouldShowShadow(currentScrollTop > 2);
+
+  timer = setTimeout(() => {
+    setShouldHideHeader(isScrolledDown && isMinimumScrolled);
+  }, TIMEOUT_DELAY);
+});
+
+useEffect(() => () => clearTimeout(timer));
+```

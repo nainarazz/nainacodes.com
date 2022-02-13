@@ -1,3 +1,4 @@
+import { SnippetFrontMatter } from './../types/SnippetFrontMatter';
 import { bundleMDX } from 'mdx-bundler';
 import fs from 'fs';
 import matter from 'gray-matter';
@@ -112,7 +113,7 @@ export async function getFileBySlug<T>(type: 'authors' | 'blog', slug: string | 
   };
 }
 
-export async function getAllFilesFrontMatter(folder: 'blog') {
+export async function getAllFilesFrontMatter(folder: 'blog' | 'snippets') {
   const prefixPaths = path.join(root, 'data', folder);
 
   const files = getAllFilesRecursively(prefixPaths);
@@ -128,7 +129,7 @@ export async function getAllFilesFrontMatter(folder: 'blog') {
     }
     const source = fs.readFileSync(file, 'utf8');
     const matterFile = matter(source);
-    const frontmatter = matterFile.data as AuthorFrontMatter | PostFrontMatter;
+    const frontmatter = matterFile.data as AuthorFrontMatter | PostFrontMatter | SnippetFrontMatter;
     if ('draft' in frontmatter && frontmatter.draft !== true) {
       allFrontMatter.push({
         ...frontmatter,
