@@ -28,7 +28,7 @@ export default function Footer() {
           </Link>
         </div>
         <div className="flex flex-col space-y-4">
-          <Link href="/snippet" className="text-sm text-gray-600">
+          <Link href="/snippets" className="text-sm text-gray-600">
             Snippets
           </Link>
           <Link href="/tags" className="text-sm text-gray-600">
