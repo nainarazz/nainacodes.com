@@ -64,7 +64,7 @@ export default function PostLayout({
               <div>
                 <PageTitle>{title}</PageTitle>
                 <div className="flex flex-row justify-center">
-                  <div>
+                  <dl>
                     <dt className="sr-only">Published on</dt>
                     <dd className="text-base font-medium leading-6 text-gray-500 dark:text-gray-400">
                       <time dateTime={date}>
@@ -78,7 +78,7 @@ export default function PostLayout({
                         ))}
                       </div>
                     )}
-                  </div>
+                  </dl>
                 </div>
               </div>
             </div>
