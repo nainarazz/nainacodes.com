@@ -22,7 +22,6 @@ export function useDocumentScroll(
   let previousScrollTop = 0;
 
   function handleDocumentScroll() {
-    // eslint-disable-next-line no-undef
     const { scrollTop: currentScrollTop } = document.documentElement || document.body;
 
     setScrollPosition((previousPosition) => {
@@ -36,22 +35,18 @@ export function useDocumentScroll(
   const handleDocumentScrollThrottled = throttle(handleDocumentScroll, 250);
 
   useEffect(() => {
-    // eslint-disable-next-line no-undef
     window.addEventListener('scroll', handleDocumentScrollThrottled);
 
-    // eslint-disable-next-line no-undef
     return () => window.removeEventListener('scroll', handleDocumentScrollThrottled);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 }
 ```
 
 This is how you use the hook in a component to show or hide navbar (like on this site).
 
-```typescript
+```typescript:navbar.tsx
 let timer: any;
 const [shouldHideHeader, setShouldHideHeader] = useState(false);
-const [shouldShowShadow, setShouldShowShadow] = useState(false);
 
 const MINIMUM_SCROLL = 80;
 const TIMEOUT_DELAY = 200;
@@ -61,12 +56,17 @@ useDocumentScroll((callbackData) => {
   const isScrolledDown = previousScrollTop < currentScrollTop;
   const isMinimumScrolled = currentScrollTop > MINIMUM_SCROLL;
 
-  setShouldShowShadow(currentScrollTop > 2);
-
   timer = setTimeout(() => {
     setShouldHideHeader(isScrolledDown && isMinimumScrolled);
   }, TIMEOUT_DELAY);
 });
 
 useEffect(() => () => clearTimeout(timer));
+
+return (
+  <>
+    // your html code here. You can use shouldHideHeader variable
+  </>
+
+);
 ```
