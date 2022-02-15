@@ -130,7 +130,7 @@ export default function PostLayout({
                 <Link href={discussUrl(slug)} rel="nofollow">
                   {'Discuss on Twitter'}
                 </Link>
-                {` • `}
+                <span className="mx-2">{` • `}</span>
                 <Link href={editUrl(fileName)}>{'View on GitHub'}</Link>
               </div>
               <Comments frontMatter={frontMatter} />
