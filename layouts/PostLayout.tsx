@@ -139,7 +139,7 @@ export default function PostLayout({
                   <div className="flex flex-col justify-between py-4 md:flex-row ">
                     {prev && (
                       <div className="mb-8 md:mb-0">
-                        <h2 className=" uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                        <h2 className=" mb-2 uppercase tracking-wide text-gray-500 dark:text-gray-400">
                           Previous Article
                         </h2>
                         <div className="text-primary-500 hover:text-primary-600 dark:text-yellow-500 dark:hover:text-yellow-600">
@@ -149,7 +149,7 @@ export default function PostLayout({
                     )}
                     {next && (
                       <div>
-                        <h2 className=" uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                        <h2 className=" mb-2 uppercase tracking-wide text-gray-500 dark:text-gray-400">
                           Next Article
                         </h2>
                         <div className="text-primary-500 hover:text-primary-600 dark:text-yellow-500 dark:hover:text-yellow-600">
