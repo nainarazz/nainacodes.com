@@ -105,7 +105,7 @@ export default function PostLayout({
                             className="h-10 w-10 rounded-full"
                           />
                         )}
-                        <dl className="whitespace-nowrap text-sm font-medium leading-5">
+                        <dl className="whitespace-nowrap font-medium leading-5">
                           <dt className="sr-only">Name</dt>
                           <dd className="text-gray-900 dark:text-gray-100">{author.name}</dd>
                           <dt className="sr-only">Twitter</dt>
@@ -126,7 +126,7 @@ export default function PostLayout({
                 </dd>
               </dl>
 
-              <div className="pt-6 pb-6 text-sm text-gray-700 dark:text-gray-300">
+              <div className="pt-6 pb-6 text-gray-700 dark:text-gray-300">
                 <Link href={discussUrl(slug)} rel="nofollow">
                   {'Discuss on Twitter'}
                 </Link>
@@ -139,7 +139,7 @@ export default function PostLayout({
                   <div className="flex flex-col justify-between py-4 md:flex-row ">
                     {prev && (
                       <div className="mb-8 md:mb-0">
-                        <h2 className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                        <h2 className=" uppercase tracking-wide text-gray-500 dark:text-gray-400">
                           Previous Article
                         </h2>
                         <div className="text-primary-500 hover:text-primary-600 dark:text-yellow-500 dark:hover:text-yellow-600">
@@ -149,7 +149,7 @@ export default function PostLayout({
                     )}
                     {next && (
                       <div>
-                        <h2 className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                        <h2 className=" uppercase tracking-wide text-gray-500 dark:text-gray-400">
                           Next Article
                         </h2>
                         <div className="text-primary-500 hover:text-primary-600 dark:text-yellow-500 dark:hover:text-yellow-600">
