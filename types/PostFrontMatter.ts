@@ -6,8 +6,8 @@ export type PostFrontMatter = {
   draft?: boolean;
   summary?: string;
   images?: string[];
-  coverImageAttributionText: string;
-  coverImageAttributionUrl: string;
+  coverImageAttributionText?: string;
+  coverImageAttributionUrl?: string;
   authors?: string[];
   layout?: string;
   slug: string;
