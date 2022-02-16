@@ -12,6 +12,7 @@ import { PostFrontMatter } from 'types/PostFrontMatter';
 import { AuthorFrontMatter } from 'types/AuthorFrontMatter';
 import { Toc } from 'types/Toc';
 import TOCInline from '@/components/TOCInline';
+import ImageAttribution from '@/components/ImageAttribution';
 
 const editUrl = (fileName) => `${siteMetadata.siteRepo}/blob/master/data/blog/${fileName}`;
 const discussUrl = (slug) =>
@@ -46,7 +47,16 @@ export default function PostLayout({
   children,
   toc,
 }: Props) {
-  const { slug, fileName, date, title, tags } = frontMatter;
+  const {
+    slug,
+    fileName,
+    date,
+    title,
+    tags,
+    images,
+    coverImageAttributionText,
+    coverImageAttributionUrl,
+  } = frontMatter;
 
   return (
     <SectionContainer className="mt-0">
@@ -82,6 +92,15 @@ export default function PostLayout({
               </div>
             </div>
           </header>
+
+          {images && images[0] ? (
+            <div className="mx-auto w-full py-4 md:w-3/4">
+              <Image src={images[0]} width="768" height="512" alt="avatar" className="rounded-md" />
+              {coverImageAttributionText && coverImageAttributionUrl ? (
+                <ImageAttribution text={coverImageAttributionText} url={coverImageAttributionUrl} />
+              ) : null}
+            </div>
+          ) : null}
 
           <div
             className="divide-y divide-gray-200 pb-8 dark:divide-gray-700 xl:grid xl:grid-cols-4 xl:gap-x-6 xl:divide-y-0"
