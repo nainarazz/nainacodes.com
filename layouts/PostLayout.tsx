@@ -71,7 +71,7 @@ export default function PostLayout({
                       </time>
                     </div>
                     {tags && (
-                      <div>
+                      <div className="flex flex-wrap justify-center">
                         {tags.map((tag) => (
                           <Tag key={tag} text={tag} />
                         ))}
