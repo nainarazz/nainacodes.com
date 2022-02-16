@@ -6,7 +6,7 @@ import { formatSlug, getAllFilesFrontMatter, getFileBySlug, getFiles } from '@/l
 import { GetStaticProps, InferGetStaticPropsType } from 'next';
 import { PostFrontMatter } from 'types/PostFrontMatter';
 
-const DEFAULT_LAYOUT = 'PostSimple';
+const DEFAULT_LAYOUT = 'SnippetLayout';
 
 export async function getStaticPaths() {
   const snippets = getFiles('snippets');

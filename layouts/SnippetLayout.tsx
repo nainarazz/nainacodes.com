@@ -1,8 +1,6 @@
 import Link from '@/components/Link';
 import PageTitle from '@/components/PageTitle';
-import Image from '@/components/Image';
 import SectionContainer from '@/components/SectionContainer';
-import ImageAttribution from '@/components/ImageAttribution';
 import { BlogSEO } from '@/components/SEO';
 import siteMetadata from '@/data/site-metadata';
 import formatDate from '@/lib/utils/formatDate';
@@ -18,9 +16,8 @@ interface Props {
   prev?: { slug: string; title: string };
 }
 
-export default function PostLayout({ frontMatter, next, prev, children }: Props) {
-  const { slug, date, title, coverImageAttributionUrl, coverImageAttributionText, images } =
-    frontMatter;
+export default function SnippetLayout({ frontMatter, next, prev, children }: Props) {
+  const { slug, date, title } = frontMatter;
 
   return (
     <SectionContainer className="mt-0">
@@ -43,15 +40,6 @@ export default function PostLayout({ frontMatter, next, prev, children }: Props)
               </div>
             </div>
           </header>
-
-          {images && images[0] ? (
-            <div className="mx-auto w-full py-4 md:w-3/4">
-              <Image src={images[0]} width="768" height="512" alt="avatar" className="rounded-md" />
-              {coverImageAttributionText && coverImageAttributionUrl ? (
-                <ImageAttribution text={coverImageAttributionText} url={coverImageAttributionUrl} />
-              ) : null}
-            </div>
-          ) : null}
 
           <div
             className="divide-y divide-gray-200 pb-8 dark:divide-gray-700 xl:divide-y-0 "
