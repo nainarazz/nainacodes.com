@@ -29,8 +29,6 @@ I have studied Software Engineering in Kampala, Uganda, and shortly after gradua
 got my first job as a software developer in a large software consulting company. Now I am
 working with a software startup developing web applications.
 
-## Open source projects
-
 ## Blogs I really like
 
 - [Kent Dodds](https://kentcdodds.com). — love his articles about React and testing
