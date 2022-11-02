@@ -2,7 +2,7 @@
 name: Naina Razafindrabiby
 avatar: /static/images/avatar.png
 occupation: Frontend developer
-company: Dreamslab
+company: Providus
 email: naina@nainacodes.com
 twitter: https://twitter.com/nr_razz
 linkedin: https://www.linkedin.com/in/nainarazz
