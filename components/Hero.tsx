@@ -19,7 +19,7 @@ export default function Hero() {
           </span>
         </h1>
         <h2 className="mb-4 text-xl text-gray-600 dark:text-gray-200">
-          Frontend developer at <span className="font-semibold">Dreamslab</span>{' '}
+          Frontend developer at <span className="font-semibold">Providus</span>{' '}
         </h2>
         <p className="mb-12 text-2xl text-gray-600 dark:text-gray-400">
           I build stuff for the web. Welcome to my digital space online.
