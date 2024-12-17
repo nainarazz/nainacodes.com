@@ -30,7 +30,7 @@ export default function Hero() {
           src="/static/images/avatar.png"
           alt="avatar"
           width="120"
-          height="120px"
+          height="120"
           className="h-48 w-48 rounded-full"
         />
       </div>

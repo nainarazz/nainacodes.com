@@ -17,9 +17,13 @@ const getAccessToken = async () => {
     },
     body: new URLSearchParams({
       grant_type: 'refresh_token',
-      refresh_token,
+      refresh_token: refresh_token as string,
     }),
   });
+
+  if (!response.ok) {
+    return '';
+  }
 
   return response.json();
 };

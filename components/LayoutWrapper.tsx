@@ -1,3 +1,5 @@
+'use client';
+
 import siteMetadata from '@/data/site-metadata';
 import headerNavLinks from '@/data/header-nav-links';
 import Link from './Link';
@@ -5,7 +7,7 @@ import SectionContainer from './SectionContainer';
 import Footer from './Footer';
 import ThemeSwitch from './ThemeSwitch';
 import { ReactNode, useState } from 'react';
-import { useRouter } from 'next/router';
+import { usePathname } from 'next/navigation';
 import { useDocumentScrollThrottled } from 'hooks/useDocumentScrollThrottled';
 import { useEffect } from 'react';
 
@@ -14,7 +16,7 @@ interface Props {
 }
 
 const LayoutWrapper = ({ children }: Props) => {
-  const router = useRouter();
+  const pathname = usePathname();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let timer: any;
   const [shouldHideHeader, setShouldHideHeader] = useState(false);
@@ -63,7 +65,7 @@ const LayoutWrapper = ({ children }: Props) => {
                   key={link.title}
                   href={link.href}
                   className={`p-4 font-medium text-gray-900 decoration-blue-700 hover:underline hover:decoration-wavy dark:text-gray-100 dark:decoration-yellow-500 ${
-                    router.asPath.includes(link.href)
+                    pathname?.includes(link.href)
                       ? 'underline  decoration-wavy underline-offset-4 '
                       : ''
                   }`}

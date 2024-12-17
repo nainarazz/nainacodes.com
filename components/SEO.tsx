@@ -1,5 +1,7 @@
+'use client';
+
 import Head from 'next/head';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import siteMetadata from '@/data/site-metadata';
 import { AuthorFrontMatter } from 'types/AuthorFrontMatter';
 import { PostFrontMatter } from 'types/PostFrontMatter';
@@ -108,8 +110,8 @@ export const BlogSEO = ({
     images.length === 0
       ? [siteMetadata.socialBanner]
       : typeof images === 'string'
-      ? [images]
-      : images;
+        ? [images]
+        : images;
 
   const featuredImages = imagesArr.map((img) => {
     return {

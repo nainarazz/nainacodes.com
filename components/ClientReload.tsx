@@ -1,5 +1,5 @@
+import { usePathname, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import Router from 'next/router';
 
 /**
  * Client-side complement to next-remote-watch
@@ -7,17 +7,23 @@ import Router from 'next/router';
  *
  */
 export const ClientReload = () => {
+  const router = useRouter();
+  const pathname = usePathname();
+
   // Exclude socket.io from prod bundle
   useEffect(() => {
     import('socket.io-client').then((module) => {
       const socket = module.io();
-      socket.on('reload', () => {
-        Router.replace(Router.asPath, undefined, {
-          scroll: false,
+
+      if (pathname) {
+        socket.on('reload', () => {
+          router.replace(pathname, {
+            scroll: false,
+          });
         });
-      });
+      }
     });
-  }, []);
+  }, [pathname, router]);
 
   return null;
 };

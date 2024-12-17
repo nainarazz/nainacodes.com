@@ -2,30 +2,52 @@ import BlogCard from '@/components/BlogCard';
 import Hero from '@/components/Hero';
 import Image from '@/components/Image';
 import Link from '@/components/Link';
-import { PageSEO } from '@/components/SEO';
 import siteMetadata from '@/data/site-metadata';
-import fetcher from '@/lib/fetcher';
 import { getAllFilesFrontMatter } from '@/lib/mdx';
+import { getTopShowEpisodes } from '@/lib/spotify';
 import formatDate from '@/lib/utils/formatDate';
-import { GetStaticProps, InferGetStaticPropsType } from 'next';
-import useSWR from 'swr';
-import { PostFrontMatter } from 'types/PostFrontMatter';
+import { Metadata } from 'next';
 import { Show } from 'types/Spotify';
+
+export const metadata: Metadata = {
+  title: siteMetadata.title,
+  description: siteMetadata.description,
+};
+
+async function getSyntaxEpisodes() {
+  const SYNTAX_FM_SHOW_ID = '4kYCRYJ3yK5DQbP5tbfZby';
+  const response = await getTopShowEpisodes(SYNTAX_FM_SHOW_ID);
+
+  if (response.status === 204 || response.status > 400) {
+    return [];
+  }
+
+  const show = await response.json();
+
+  if (!show.items) {
+    return [];
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const items: Show[] = show.items.map((i: any) => ({
+    id: i.id,
+    title: i.name,
+    date: i.release_date,
+    image: i.images[0] ? i.images[0].url : '',
+    url: i.external_urls?.spotify || '',
+  }));
+
+  return items;
+}
 
 const MAX_DISPLAY = 6;
 
-export const getStaticProps: GetStaticProps<{ posts: PostFrontMatter[] }> = async () => {
+export default async function HomePage() {
   const posts = await getAllFilesFrontMatter('blog');
-
-  return { props: { posts } };
-};
-
-export default function Home({ posts }: InferGetStaticPropsType<typeof getStaticProps>) {
-  const { data: episodes } = useSWR<Show[]>('/api/shows', fetcher);
+  const episodes = await getSyntaxEpisodes();
 
   return (
     <>
-      <PageSEO title={siteMetadata.title} description={siteMetadata.description} />
       <Hero />
       <div className="space-y-2 pt-6 pb-8 md:space-y-5">
         <h1 className="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:leading-10 md:text-4xl md:leading-14">

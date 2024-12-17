@@ -10,7 +10,7 @@ import { AuthorFrontMatter } from 'types/AuthorFrontMatter';
 import { Toc } from 'types/Toc';
 // Remark packages
 import remarkGfm from 'remark-gfm';
-import remarkFootnotes from 'remark-footnotes';
+//import remarkFootnotes from 'remark-footnotes';
 import remarkMath from 'remark-math';
 import remarkExtractFrontmatter from './remark-extract-frontmatter';
 import remarkCodeTitles from './remark-code-title';
@@ -22,7 +22,6 @@ import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import rehypeKatex from 'rehype-katex';
 import rehypeCitation from 'rehype-citation';
 import rehypePrismPlus from 'rehype-prism-plus';
-import rehypePresetMinify from 'rehype-preset-minify';
 
 const root = process.cwd();
 
@@ -69,7 +68,7 @@ export async function getFileBySlug<T>(
     source,
     // mdx imports can be automatically source from the components directory
     cwd: path.join(root, 'components'),
-    xdmOptions(options) {
+    mdxOptions(options) {
       // this is the recommended way to add custom remark/rehype plugins:
       // The syntax might look weird, but it protects you in case we add/remove
       // plugins in the future.
@@ -79,7 +78,7 @@ export async function getFileBySlug<T>(
         [remarkTocHeadings, { exportRef: toc }],
         remarkGfm,
         remarkCodeTitles,
-        [remarkFootnotes, { inlineNotes: true }],
+        // [remarkFootnotes, { inlineNotes: true }],
         remarkMath,
         remarkImgToJsx,
       ];
@@ -90,7 +89,7 @@ export async function getFileBySlug<T>(
         rehypeKatex,
         [rehypeCitation, { path: path.join(root, 'data') }],
         [rehypePrismPlus, { ignoreMissing: true }],
-        rehypePresetMinify,
+        // rehypePresetMinify,
       ];
       return options;
     },
@@ -137,7 +136,7 @@ export async function getAllFilesFrontMatter(folder: 'blog' | 'snippets') {
       allFrontMatter.push({
         ...frontmatter,
         slug: formatSlug(fileName),
-        date: frontmatter.date ? new Date(frontmatter.date).toISOString() : null,
+        date: frontmatter.date ? new Date(frontmatter.date).toISOString() : '',
       });
     }
   });
