@@ -1,9 +1,10 @@
-import useSWR from 'swr';
+'use client';
+
 import { useEffect } from 'react';
 import { animate } from 'motion';
-
-import fetcher from 'lib/fetcher';
+import useSWR from 'swr';
 import { NowPlayingSong } from 'types/Spotify';
+import fetcher from '@/lib/fetcher';
 
 function AnimatedBars() {
   useEffect(() => {
