@@ -2,6 +2,29 @@ import projectsData from '@/data/projects-data';
 import Card from '@/components/Card';
 import { PageSEO } from '@/components/SEO';
 import siteMetadata from '@/data/site-metadata';
+import { Metadata } from 'next';
+
+const ogImageUrl = siteMetadata.siteUrl + siteMetadata.socialBanner;
+const twImageUrl = siteMetadata.siteUrl + siteMetadata.socialBanner;
+
+export const metadata: Metadata = {
+  title: `Projects - ${siteMetadata.author}`,
+  description: siteMetadata.description,
+  twitter: {
+    images: [twImageUrl],
+    card: 'summary_large_image',
+    site: siteMetadata.twitter,
+    description: siteMetadata.description,
+    title: `Projects - ${siteMetadata.author}`,
+  },
+  openGraph: {
+    images: [ogImageUrl],
+    type: 'website',
+    siteName: siteMetadata.title,
+    description: siteMetadata.description,
+    title: `Projects - ${siteMetadata.author}`,
+  },
+};
 
 export default function Projects() {
   return (
