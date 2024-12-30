@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-disable @typescript-eslint/no-require-imports */
 
 // Adapated from https://github.com/hashicorp/next-remote-watch
 // A copy of next-remote-watch with an additional ws reload emitter.
@@ -101,7 +102,7 @@ app.prepare().then(() => {
     // log message if present
     const msg = req.body.message;
     const color = req.body.color;
-    // eslint-disable-next-line no-console
+    // eslint-disable-next-line no-console, @typescript-eslint/no-unused-expressions
     msg && console.log(color ? chalk[color](msg) : msg);
 
     // reload the nextjs app

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 const fs = require('fs');
 const globby = require('globby');
 const matter = require('gray-matter');
@@ -58,6 +59,6 @@ const siteMetadata = require('../data/site-metadata');
     parser: 'html',
   });
 
-  // eslint-disable-next-line no-sync
+   
   fs.writeFileSync('public/sitemap.xml', formatted);
 })();
