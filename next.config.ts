@@ -1,16 +1,5 @@
-import createMDX from '@next/mdx';
-
-import remarkGfm from 'remark-gfm';
-import remarkMath from 'remark-math';
-
-import rehypeSlug from 'rehype-slug';
-import rehypeAutolinkHeadings from 'rehype-autolink-headings';
-import rehypeKatex from 'rehype-katex';
-import rehypeCitation from 'rehype-citation';
-import rehypePrismPlus from 'rehype-prism-plus';
-import rehypePresetMinify from 'rehype-preset-minify';
-
 import bundleAnalyzer from '@next/bundle-analyzer';
+import type { NextConfig } from 'next';
 
 const withBundleAnalyzer = bundleAnalyzer({
   enabled: process.env.ANALYZE === 'true',
@@ -70,7 +59,7 @@ const securityHeaders = [
 /**
  * @type {import('next/dist/next-server/server/config').NextConfig}
  **/
-const nextConfig = {
+const nextConfig: NextConfig = {
   reactStrictMode: true,
   pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
   eslint: {
@@ -109,24 +98,7 @@ const nextConfig = {
   },
 };
 
-const bundlerAnalyzerConfig = withBundleAnalyzer(nextConfig);
-
-const withMDX = createMDX({
-  options: {
-    remarkPlugins: [remarkGfm, remarkMath],
-    rehypePlugins: [
-      rehypeSlug,
-      rehypeAutolinkHeadings,
-      rehypeCitation,
-      rehypeCitation,
-      rehypeKatex,
-      rehypePrismPlus,
-      rehypePresetMinify,
-    ],
-  },
-});
-
 /**
  * @type {import('next/dist/next-server/server/config').NextConfig}
  **/
-export default withMDX(bundlerAnalyzerConfig);
+export default withBundleAnalyzer(nextConfig);

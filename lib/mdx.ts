@@ -22,6 +22,7 @@ import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import rehypeKatex from 'rehype-katex';
 import rehypeCitation from 'rehype-citation';
 import rehypePrismPlus from 'rehype-prism-plus';
+// import rehypePresetMinify from 'rehype-preset-minify';
 
 const root = process.cwd();
 
@@ -63,12 +64,12 @@ export async function getFileBySlug<T>(
   const toc: Toc = [];
 
   // Parsing frontmatter here to pass it in as options to rehype plugin
-  const { data: frontmatter } = matter(source);
-  const { code } = await bundleMDX({
+  // const { data: frontmatter } = matter(source);
+  const { code, frontmatter } = await bundleMDX({
     source,
     // mdx imports can be automatically source from the components directory
     cwd: path.join(root, 'components'),
-    mdxOptions(options) {
+    mdxOptions: (options) => {
       // this is the recommended way to add custom remark/rehype plugins:
       // The syntax might look weird, but it protects you in case we add/remove
       // plugins in the future.
