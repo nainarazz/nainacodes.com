@@ -1,8 +1,6 @@
 import Link from '@/components/Link';
 import PageTitle from '@/components/PageTitle';
 import SectionContainer from '@/components/SectionContainer';
-import { BlogSEO } from '@/components/SEO';
-import siteMetadata from '@/data/site-metadata';
 import formatDate from '@/lib/utils/formatDate';
 import Comments from '@/components/comments';
 import ScrollTopAndComment from '@/components/ScrollTopAndComment';
@@ -17,11 +15,10 @@ interface Props {
 }
 
 export default function SnippetLayout({ frontMatter, next, prev, children }: Props) {
-  const { slug, date, title } = frontMatter;
+  const { date, title } = frontMatter;
 
   return (
     <SectionContainer className="mt-0">
-      <BlogSEO url={`${siteMetadata.siteUrl}/blog/${slug}`} {...frontMatter} />
       <ScrollTopAndComment />
       <article>
         <div>
