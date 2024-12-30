@@ -1,4 +1,5 @@
 import NextThemeProvider from '@/components/NextThemeProvider';
+import siteMetadata from '@/data/site-metadata';
 import { Metadata, Viewport } from 'next';
 
 export const viewport: Viewport = {
@@ -7,8 +8,25 @@ export const viewport: Viewport = {
   themeColor: '#1D4ED8',
 };
 
+const ogImageUrl = siteMetadata.siteUrl + siteMetadata.socialBanner;
+const twImageUrl = siteMetadata.siteUrl + siteMetadata.socialBanner;
+
 export const metadata: Metadata = {
   manifest: '/static/favicons/site.webmanifest',
+  twitter: {
+    images: [twImageUrl],
+    card: 'summary_large_image',
+    site: siteMetadata.twitter,
+    description: siteMetadata.description,
+    title: `Naina Codes`,
+  },
+  openGraph: {
+    images: [ogImageUrl],
+    type: 'website',
+    siteName: siteMetadata.title,
+    description: siteMetadata.description,
+    title: `Naina Codes`,
+  },
   icons: {
     icon: [
       { url: '/static/favicons/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
@@ -26,11 +44,15 @@ export const metadata: Metadata = {
       color: '#5bbad5',
     },
   },
+  other: {
+    'msapplication-TileColor': '#5bbad5',
+  },
   alternates: {
     types: {
       'application/rss+xml': '/feed.xml',
     },
   },
+  robots: 'follow, index',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

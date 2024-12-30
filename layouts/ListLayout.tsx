@@ -1,3 +1,5 @@
+'use client';
+
 import { useState } from 'react';
 import { PostFrontMatter } from 'types/PostFrontMatter';
 import BlogCard from '@/components/BlogCard';
@@ -44,6 +46,8 @@ export default function ListLayout({ posts, title }: Props) {
 
           <div className="relative max-w-lg">
             <input
+              id="search-input"
+              name="search-input"
               aria-label="Search articles"
               type="text"
               onChange={handleSearch}
