@@ -63,7 +63,7 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
   eslint: {
-    dirs: ['app', 'pages', 'components', 'lib', 'layouts', 'scripts'],
+    dirs: ['app', 'components', 'lib', 'layouts', 'scripts'],
   },
   webpack: (config, { dev, isServer }) => {
     config.module.rules.push({

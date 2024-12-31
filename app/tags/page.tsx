@@ -1,22 +1,43 @@
 import Link from '@/components/Link';
-import { PageSEO } from '@/components/SEO';
 import Tag from '@/components/Tag';
 import siteMetadata from '@/data/site-metadata';
 import { getAllTags } from '@/lib/tags';
 import kebabCase from '@/lib/utils/kebabCase';
-import { GetStaticProps, InferGetStaticPropsType } from 'next';
+import { Metadata } from 'next';
 
-export const getStaticProps: GetStaticProps<{ tags: Record<string, number> }> = async () => {
-  const tags = await getAllTags('blog');
+const ogImageUrl = siteMetadata.siteUrl + siteMetadata.socialBanner;
+const twImageUrl = siteMetadata.siteUrl + siteMetadata.socialBanner;
 
-  return { props: { tags } };
+export const metadata: Metadata = {
+  title: `Tags - ${siteMetadata.title}`,
+  description: 'Popular tags in JavaScript and frontend space',
+  twitter: {
+    images: [twImageUrl],
+    card: 'summary_large_image',
+    site: siteMetadata.twitter,
+    description: 'Popular tags in JavaScript and frontend space',
+    title: `Tags - ${siteMetadata.title}`,
+  },
+  openGraph: {
+    images: [ogImageUrl],
+    type: 'website',
+    siteName: siteMetadata.title,
+    description: 'Popular tags in JavaScript and frontend space',
+    title: `Tags - ${siteMetadata.title}`,
+  },
 };
 
-export default function Tags({ tags }: InferGetStaticPropsType<typeof getStaticProps>) {
+async function getTags(): Promise<Record<string, number>> {
+  const tags = await getAllTags('blog');
+  return tags;
+}
+
+export default async function Tags() {
+  const tags = await getTags();
   const sortedTags = Object.keys(tags).sort((a, b) => tags[b] - tags[a]);
+
   return (
     <>
-      <PageSEO title={`Tags - ${siteMetadata.author}`} description="Things I blog about" />
       <div className="flex flex-col items-start justify-start divide-y divide-gray-200 dark:divide-gray-700 md:mt-24 md:flex-row md:items-center md:justify-center md:space-x-6 md:divide-y-0">
         <div className="space-x-2 pt-6 pb-8 md:space-y-5">
           <h1 className="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 md:border-r-2 md:px-6 md:text-6xl md:leading-14">
