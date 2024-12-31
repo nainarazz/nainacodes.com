@@ -3,8 +3,6 @@ import PageTitle from '@/components/PageTitle';
 import Image from '@/components/Image';
 import SectionContainer from '@/components/SectionContainer';
 import ImageAttribution from '@/components/ImageAttribution';
-import { BlogSEO } from '@/components/SEO';
-import siteMetadata from '@/data/site-metadata';
 import formatDate from '@/lib/utils/formatDate';
 import Comments from '@/components/comments';
 import ScrollTopAndComment from '@/components/ScrollTopAndComment';
@@ -19,12 +17,10 @@ interface Props {
 }
 
 export default function PostLayout({ frontMatter, next, prev, children }: Props) {
-  const { slug, date, title, coverImageAttributionUrl, coverImageAttributionText, images } =
-    frontMatter;
+  const { date, title, coverImageAttributionUrl, coverImageAttributionText, images } = frontMatter;
 
   return (
     <SectionContainer className="mt-0">
-      <BlogSEO url={`${siteMetadata.siteUrl}/blog/${slug}`} {...frontMatter} />
       <ScrollTopAndComment />
       <article>
         <div>
