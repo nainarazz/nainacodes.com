@@ -17,8 +17,7 @@ interface Props {
 
 const LayoutWrapper = ({ children }: Props) => {
   const pathname = usePathname();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let timer: any;
+  const [timerId, setTimerId] = useState<ReturnType<typeof setTimeout> | null>(null);
   const [shouldHideHeader, setShouldHideHeader] = useState(false);
   const [shouldShowShadow, setShouldShowShadow] = useState(false);
 
@@ -32,12 +31,20 @@ const LayoutWrapper = ({ children }: Props) => {
 
     setShouldShowShadow(currentScrollTop > 2);
 
-    timer = setTimeout(() => {
+    const id = setTimeout(() => {
       setShouldHideHeader(isScrolledDown && isMinimumScrolled);
     }, TIMEOUT_DELAY);
+    setTimerId(id);
   });
 
-  useEffect(() => () => clearTimeout(timer));
+  useEffect(
+    () => () => {
+      if (timerId) {
+        clearInterval(timerId);
+      }
+    },
+    [timerId]
+  );
 
   return (
     <>

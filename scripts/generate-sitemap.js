@@ -1,11 +1,8 @@
-/* eslint-disable @typescript-eslint/no-require-imports */
-const fs = require('fs');
-const globbyModule = require('globby');
-const matter = require('gray-matter');
-const prettier = require('prettier');
-const siteMetadata = require('../data/site-metadata');
-
-const globby = globbyModule.globby;
+import fs from 'fs';
+import { globby } from 'globby';
+import matter from 'gray-matter';
+import prettier from 'prettier';
+import siteMetadata from '../data/site-metadata.js';
 
 (async () => {
   const prettierConfig = await prettier.resolveConfig('./.prettierrc.js');
@@ -20,8 +17,6 @@ const globby = globbyModule.globby;
     '!app/api',
   ]);
 
-  // eslint-disable-next-line no-console
-  console.log('pages', pages);
   const sitemap = `
         <?xml version="1.0" encoding="UTF-8"?>
         <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

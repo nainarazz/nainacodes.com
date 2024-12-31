@@ -25,7 +25,19 @@ export default function NextThemeProvider({ children }: NextThemeProviderProps) 
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    pageview(`${pathname}?${searchParams}`);
+    let timerId: ReturnType<typeof setTimeout> | null = null;
+
+    // delay the calling of pageview so that on initial load
+    // from server we can make sure gtag is already on window object
+    timerId = setTimeout(() => {
+      pageview(`${pathname}?${searchParams}`);
+    }, 500);
+
+    return () => {
+      if (timerId) {
+        clearTimeout(timerId);
+      }
+    };
   }, [pathname, searchParams]);
 
   return (

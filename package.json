@@ -2,6 +2,7 @@
   "name": "nainacodes",
   "version": "2.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "start": "cross-env SOCKET=true node ./scripts/next-remote-watch.js ./data",
     "dev": "next dev",
