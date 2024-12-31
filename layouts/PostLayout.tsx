@@ -1,7 +1,6 @@
 import Link from '@/components/Link';
 import PageTitle from '@/components/PageTitle';
 import SectionContainer from '@/components/SectionContainer';
-import { BlogSEO } from '@/components/SEO';
 import Image from '@/components/Image';
 import Tag from '@/components/Tag';
 import siteMetadata from '@/data/site-metadata';
@@ -59,12 +58,7 @@ export default function PostLayout({
   } = frontMatter;
 
   return (
-    <SectionContainer className="mt-0">
-      <BlogSEO
-        url={`${siteMetadata.siteUrl}/blog/${slug}`}
-        authorDetails={authorDetails}
-        {...frontMatter}
-      />
+    <SectionContainer className="!mt-0">
       <ScrollTopAndComment />
       <article>
         <div className="xl:divide-y xl:divide-gray-200 xl:dark:divide-gray-700">
@@ -118,8 +112,8 @@ export default function PostLayout({
                         {author.avatar && (
                           <Image
                             src={author.avatar}
-                            width="38px"
-                            height="38px"
+                            width="38"
+                            height="38"
                             alt="avatar"
                             className="h-10 w-10 rounded-full"
                           />
