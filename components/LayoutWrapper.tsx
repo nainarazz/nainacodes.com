@@ -42,8 +42,8 @@ const LayoutWrapper = ({ children }: Props) => {
   return (
     <>
       <header
-        className={`fixed top-0 z-10 w-full bg-white duration-150 dark:bg-gray-900 ${
-          shouldHideHeader ? '-top-28' : ''
+        className={`fixed z-10 w-full bg-white duration-150 dark:bg-gray-900 ${
+          shouldHideHeader ? '-top-28' : 'top-0'
         } ${shouldShowShadow ? 'shadow-md' : ''}`}
       >
         <div className="mx-auto flex max-w-3xl flex-col  items-center justify-between py-6 md:flex-row xl:max-w-5xl">

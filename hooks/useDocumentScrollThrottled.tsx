@@ -8,7 +8,6 @@ export function useDocumentScrollThrottled(
   let previousScrollTop = 0;
 
   function handleDocumentScroll() {
-    // eslint-disable-next-line no-undef
     const { scrollTop: currentScrollTop } = document.documentElement || document.body;
 
     setScrollPosition((previousPosition) => {
@@ -22,10 +21,8 @@ export function useDocumentScrollThrottled(
   const handleDocumentScrollThrottled = throttle(handleDocumentScroll, 250);
 
   useEffect(() => {
-    // eslint-disable-next-line no-undef
     window.addEventListener('scroll', handleDocumentScrollThrottled);
 
-    // eslint-disable-next-line no-undef
     return () => window.removeEventListener('scroll', handleDocumentScrollThrottled);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
