@@ -86,13 +86,63 @@ async function getPost(slug: string): Promise<{
   };
 }
 
+function generateJsonLd(frontmatter: PostFrontMatter) {
+  const images = frontmatter.images || [];
+
+  const imagesArr =
+    images.length === 0
+      ? [siteMetadata.socialBanner]
+      : typeof images === 'string'
+        ? [images]
+        : images;
+
+  const featuredImages = imagesArr.map((img: string) => {
+    return {
+      '@type': 'ImageObject',
+      url: `${siteMetadata.siteUrl}${img}`,
+    };
+  });
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': `${siteMetadata.siteUrl}/blog/${frontmatter.slug}`,
+    },
+    headline: frontmatter.title,
+    image: featuredImages,
+    datePublished: new Date(frontmatter.date).toISOString(),
+    dateModified: new Date(frontmatter.lastmod || frontmatter.date).toISOString(),
+    author: {
+      '@type': 'Person',
+      name: siteMetadata.author,
+      url: siteMetadata.linkedin,
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: siteMetadata.author,
+      logo: {
+        '@type': 'ImageObject',
+        url: `${siteMetadata.siteUrl}${siteMetadata.siteLogo}`,
+      },
+    },
+    description: frontmatter.summary,
+  };
+}
+
 export default async function BlogPost({ params }: { params: Promise<{ slug: string }> }) {
   const slug = (await params).slug;
   const { post, prev, next, authorDetails } = await getPost(slug);
   const { mdxSource, toc, frontMatter } = post;
+  const jsonLd = generateJsonLd(frontMatter);
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {'draft' in frontMatter && frontMatter.draft !== true ? (
         <MDXLayoutRenderer
           layout={frontMatter.layout || DEFAULT_LAYOUT}
