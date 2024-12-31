@@ -27,7 +27,7 @@ export default function remarkCodeTitles() {
         data: { _xdmExplicitJsx: true },
       };
 
-      parent.children.splice(index, 0, titleNode);
+      parent.children.splice(index as number, 0, titleNode);
       node.lang = language;
     });
 }

@@ -20,7 +20,7 @@ const GiscusComponent = dynamic(
 );
 
 const Comments = ({ frontMatter }: Props) => {
-  let term;
+  let term = '';
   switch (
     siteMetadata.comment.giscusConfig.mapping ||
     siteMetadata.comment.utterancesConfig.issueTerm

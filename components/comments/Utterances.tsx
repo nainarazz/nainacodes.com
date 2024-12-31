@@ -21,7 +21,7 @@ const Utterances = ({ issueTerm }: Props) => {
     setEnabledLoadComments(false);
     const script = document.createElement('script');
     script.src = 'https://utteranc.es/client.js';
-    script.setAttribute('repo', siteMetadata.comment.utterancesConfig.repo);
+    script.setAttribute('repo', siteMetadata.comment.utterancesConfig.repo as string);
     script.setAttribute('issue-term', issueTerm);
     script.setAttribute('label', siteMetadata.comment.utterancesConfig.label);
     script.setAttribute('theme', commentsTheme);

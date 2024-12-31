@@ -10,50 +10,18 @@ function AnimatedBars() {
   useEffect(() => {
     animate(
       '#bar1',
-      {
-        transform: [
-          'scaleY(1.0) translateY(0rem)',
-          'scaleY(1.5) translateY(-0.082rem)',
-          'scaleY(1.0) translateY(0rem)',
-        ],
-      },
-      {
-        duration: 1.0,
-        repeat: Infinity,
-        easing: ['ease-in-out'],
-      }
+      { scaleY: 1.5, y: '-0.082rem' },
+      { ease: 'easeInOut', duration: 1.0, repeat: Infinity, repeatType: 'reverse' }
     );
     animate(
       '#bar2',
-      {
-        transform: [
-          'scaleY(1.0) translateY(0rem)',
-          'scaleY(3) translateY(-0.083rem)',
-          'scaleY(1.0) translateY(0rem)',
-        ],
-      },
-      {
-        delay: 0.2,
-        duration: 1.5,
-        repeat: Infinity,
-        easing: ['ease-in-out'],
-      }
+      { scaleY: 3, y: '-0.083rem' },
+      { ease: 'easeInOut', duration: 1.0, repeat: Infinity, repeatType: 'reverse' }
     );
     animate(
       '#bar3',
-      {
-        transform: [
-          'scaleY(1.0)  translateY(0rem)',
-          'scaleY(0.5) translateY(0.37rem)',
-          'scaleY(1.0)  translateY(0rem)',
-        ],
-      },
-      {
-        delay: 0.3,
-        duration: 1.5,
-        repeat: Infinity,
-        easing: ['ease-in-out'],
-      }
+      { scaleY: 0.5, y: '0.37rem' },
+      { ease: 'easeInOut', duration: 1.0, repeat: Infinity, repeatType: 'reverse' }
     );
   }, []);
 

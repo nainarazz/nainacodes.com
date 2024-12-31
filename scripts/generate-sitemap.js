@@ -1,23 +1,27 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 const fs = require('fs');
-const globby = require('globby');
+const globbyModule = require('globby');
 const matter = require('gray-matter');
 const prettier = require('prettier');
 const siteMetadata = require('../data/site-metadata');
 
+const globby = globbyModule.globby;
+
 (async () => {
   const prettierConfig = await prettier.resolveConfig('./.prettierrc.js');
   const pages = await globby([
-    'pages/*.js',
-    'pages/*.tsx',
+    'app/**/*.tsx',
     'data/blog/**/*.mdx',
     'data/blog/**/*.md',
     'public/tags/**/*.xml',
-    '!pages/_*.js',
-    '!pages/_*.tsx',
-    '!pages/api',
+    '!app/layout.tsx',
+    '!app/page.tsx',
+    '!app/not-found.tsx',
+    '!app/api',
   ]);
 
+  // eslint-disable-next-line no-console
+  console.log('pages', pages);
   const sitemap = `
         <?xml version="1.0" encoding="UTF-8"?>
         <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -31,8 +35,14 @@ const siteMetadata = require('../data/site-metadata');
                     return;
                   }
                 }
+
+                if (page.indexOf(`[slug]`) > -1 || page.indexOf(`[tag]`) > -1) {
+                  return;
+                }
+
                 const path = page
-                  .replace('pages/', '/')
+                  .replace('app/', '/')
+                  .replace('/page.tsx', '')
                   .replace('data/blog', '/blog')
                   .replace('public/', '/')
                   .replace('.js', '')
@@ -41,9 +51,7 @@ const siteMetadata = require('../data/site-metadata');
                   .replace('.md', '')
                   .replace('/feed.xml', '');
                 const route = path === '/index' ? '' : path;
-                if (page.search('pages/404.') > -1 || page.search(`pages/blog/[...slug].`) > -1) {
-                  return;
-                }
+
                 return `
                         <url>
                             <loc>${siteMetadata.siteUrl}${route}</loc>
@@ -54,11 +62,10 @@ const siteMetadata = require('../data/site-metadata');
         </urlset>
     `;
 
-  const formatted = prettier.format(sitemap, {
+  const formatted = await prettier.format(sitemap, {
     ...prettierConfig,
     parser: 'html',
   });
 
-   
   fs.writeFileSync('public/sitemap.xml', formatted);
 })();

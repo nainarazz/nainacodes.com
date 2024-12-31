@@ -6,8 +6,8 @@ import { load } from 'js-yaml';
 export default function extractFrontmatter() {
   return (tree: Parent, file: VFile) => {
     visit(tree, 'yaml', (node: Parent) => {
-      //@ts-ignore
-      file.data.frontmatter = load(node.value);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      file.data.frontmatter = load((node as any).value);
     });
   };
 }

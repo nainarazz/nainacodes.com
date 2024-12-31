@@ -13,7 +13,7 @@ const NewsletterForm = ({ title = 'Subscribe to the newsletter' }) => {
 
     const res = await fetch(`/api/${siteMetadata.newsletter.provider}`, {
       body: JSON.stringify({
-        email: inputEl.current.value,
+        email: inputEl?.current?.value,
       }),
       headers: {
         'Content-Type': 'application/json',
@@ -28,7 +28,9 @@ const NewsletterForm = ({ title = 'Subscribe to the newsletter' }) => {
       return;
     }
 
-    inputEl.current.value = '';
+    if (inputEl.current) {
+      inputEl.current.value = '';
+    }
     setError(false);
     setSubscribed(true);
     setMessage('Successfully! 🎉 You are now subscribed.');

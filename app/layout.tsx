@@ -1,6 +1,7 @@
 import NextThemeProvider from '@/components/NextThemeProvider';
 import siteMetadata from '@/data/site-metadata';
 import { Metadata, Viewport } from 'next';
+import { Suspense } from 'react';
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -59,7 +60,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <body className="bg-white text-black antialiased dark:bg-gray-900 dark:text-white">
-        <NextThemeProvider>{children}</NextThemeProvider>
+        <Suspense>
+          <NextThemeProvider>{children}</NextThemeProvider>
+        </Suspense>
       </body>
     </html>
   );

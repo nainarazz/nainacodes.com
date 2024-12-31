@@ -4,8 +4,6 @@ import ListLayout from '@/layouts/ListLayout';
 import { Metadata } from 'next';
 import { PostFrontMatter } from 'types/PostFrontMatter';
 
-export const POSTS_PER_PAGE = 6;
-
 const ogImageUrl = siteMetadata.siteUrl + siteMetadata.socialBanner;
 const twImageUrl = siteMetadata.siteUrl + siteMetadata.socialBanner;
 
