@@ -4,12 +4,12 @@ const GAScript = () => {
   return (
     <>
       <Script
-        strategy="lazyOnload"
+        strategy="afterInteractive"
         async
         src="https://www.googletagmanager.com/gtag/js?id=G-L0TYB55BVV"
       />
 
-      <Script strategy="lazyOnload" id="ga-script">
+      <Script strategy="afterInteractive" id="ga-script">
         {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
