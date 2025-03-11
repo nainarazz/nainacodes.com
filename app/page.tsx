@@ -14,6 +14,8 @@ export const metadata: Metadata = {
   description: siteMetadata.description,
 };
 
+export const revalidate = 86400; // seconds in 1 day
+
 async function getSyntaxEpisodes() {
   const SYNTAX_FM_SHOW_ID = '4kYCRYJ3yK5DQbP5tbfZby';
   const response = await getTopShowEpisodes(SYNTAX_FM_SHOW_ID);
