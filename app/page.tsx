@@ -30,14 +30,17 @@ async function getSyntaxEpisodes() {
     return [];
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const items: Show[] = show.items.map((i: any) => ({
-    id: i.id,
-    title: i.name,
-    date: i.release_date,
-    image: i.images[0] ? i.images[0].url : '',
-    url: i.external_urls?.spotify || '',
-  }));
+  const items: Show[] = show.items
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    .filter((i: any) => i)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    .map((i: any) => ({
+      id: i.id,
+      title: i.name,
+      date: i.release_date,
+      image: i.images[0] ? i.images[0].url : '',
+      url: i.external_urls?.spotify || '',
+    }));
 
   return items;
 }
